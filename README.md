@@ -1,5 +1,6 @@
-# projet BD \n
-bienvenue sur le projet BD \n
+# projet BD 
+bienvenue
+- bienvenue sur le projet BD <br\>
 nous allons créer notre application text en JAVA ici\n
 #nous sommes
 Halmia Mounsit
