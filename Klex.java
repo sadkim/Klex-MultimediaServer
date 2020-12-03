@@ -51,9 +51,16 @@ public class Klex {
 	    		int age =Integer.parseInt(scanner.nextLine());
 		    	System.out.println("votre mot de passe svp");
 	    		String password1 =scanner.nextLine();
-	    		
+		    	System.out.println("choisissez votre langue préferé");
+		    	try {
+					langue.languesDisponibles();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+	    		String langue =scanner.nextLine();
+
 	    		try {
-					User user1 = new User(email1, nom, prenom, age, password1);
+					User user1 = new User(email1, nom, prenom, age, password1, langue);
 				} catch (EmailAlreadyExistsException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {
