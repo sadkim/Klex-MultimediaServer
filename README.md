@@ -8,4 +8,4 @@
 - Abdelmoujib Megzari
 - Imad Rafai
 - Mouad Sadki
-- Ryan ling pang tee
+- Ryan Liing Pang Tee
