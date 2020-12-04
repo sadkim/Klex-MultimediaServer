@@ -9,3 +9,6 @@
 - Imad Rafai
 - Mouad Sadki
 - Ryan Liing Pang Tee
+
+# Guide :
+- le dossier requeteSQLPourProjet contient les réponses de la partie sql du projet : une version corrigée et vérifiée de ce qui en google doc 
