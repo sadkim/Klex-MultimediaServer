@@ -15,5 +15,6 @@ public class langue {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO Langue (langue) values(?)");
 		statement.setString(1, langue);
 		statement.executeQuery();
+		BdClass.getConnection().commit();
 	}
 }
