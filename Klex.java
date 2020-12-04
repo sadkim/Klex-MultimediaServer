@@ -1,12 +1,10 @@
 
 import java.sql.SQLException;
 import java.util.Scanner;
-
 import except.EmailAlreadyExistsException;
 import except.NoSuchUserException;
 
 public class Klex {
-
 	public static void main(String[] args)  {
 		String url="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" ;
     	String user = "megzaria" ;
@@ -22,7 +20,7 @@ public class Klex {
 	    	System.out.println("tappez inscription si vous êtes ici pour la première fois");
 	    	System.out.println("tappez aide si vous avez besoin d'aide fonction pas encore disponible");
 	    	System.out.println("tappez exit pour quitter lapplication");
-
+			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "connection":
@@ -70,7 +68,11 @@ public class Klex {
 
 				}
 	    		break;
-	    	case "exit":
+			case "ajout_artiste":
+				Artist.addArtist(scanner);
+				break;
+	    	
+			case "exit":
 	    		continuer = false;
 	    		break;
 	    	default:
