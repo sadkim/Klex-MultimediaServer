@@ -23,6 +23,10 @@ public class Klex {
 			/* C'est uniquement pour pouvoir tester la validité du code ajouté :) */
 			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
 			System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
+			System.out.println("tapez ajout_fluxVideo si vous voulez ajouter un nouveau logiciel");
+			System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
+			System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
+			
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "connection":
@@ -51,16 +55,16 @@ public class Klex {
 	    		int age =Integer.parseInt(scanner.nextLine());
 		    	System.out.println("votre mot de passe svp");
 	    		String password1 =scanner.nextLine();
-		    	System.out.println("choisissez votre langue préferé");
+		    	System.out.println("choisissez votre langue préferée");
 		    	try {
-					langue.languesDisponibles();
+					Langue.languesDisponibles();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-	    		String langue =scanner.nextLine();
+	    		String language =scanner.nextLine();
 
 	    		try {
-					User user1 = new User(email1, nom, prenom, age, password1, langue);
+					User user1 = new User(email1, nom, prenom, age, password1, language);
 				} catch (EmailAlreadyExistsException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {
@@ -77,6 +81,49 @@ public class Klex {
 			case "ajout_logiciel":
 				Logiciel.readLogicielInfo(scanner);
 				break;
+			case "ajout_fluxVideo":
+				System.out.println("Veuillez taper votre idFichier");
+				int idFichier =Integer.parseInt(scanner.nextLine());
+				System.out.println("Veuillez taper votre debit");
+				int debit =Integer.parseInt(scanner.nextLine());
+				System.out.println("Veuillez taper votre idFichier");
+				int resLargeurVid =Integer.parseInt(scanner.nextLine());
+				System.out.println("Veuillez taper votre idFichier");
+				int resHauteurVid =Integer.parseInt(scanner.nextLine());
+				System.out.println("Veuillez taper votre codec");
+				String codec =scanner.nextLine();
+		    	System.out.println("choisissez votre langue préferée");
+		    	try {
+					Langue.languesDisponibles();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+	    		String fluxLang =scanner.nextLine();
+
+	    		try {
+	    			FLuxVideo.addFluxVideo(idFichier,fluxLang,codec,debit,resLargeurVid,resHauteurVid);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+				
+			case "ajout_album":
+				System.out.println("Nom du album?");
+				String titre = scanner.nextLine();
+				System.out.println("Nom de l'Artist?");	
+				String nomArtist = scanner.nextLine();
+				System.out.println("Date de Sortie? (sous la forme AAAA-MM-JJ");
+				String dateSortie = scanner.nextLine();
+				System.out.println("URL vers l'album?");
+				String URLAlbum = scanner.nextLine();
+				try {
+					Album.addAlbum(titre, nomArtist, dateSortie, URLAlbum);
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+				
 			case "exit":
 	    		continuer = false;
 	    		break;

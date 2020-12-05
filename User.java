@@ -49,7 +49,7 @@ public class User {
 					System.out.println("langue inexistante voulais vous ajouter cette langue oui/non" );
 		    		String rep =scanner2.nextLine();
 		    		if(rep.equals("oui")) {
-		    			langue.ajouterLangue(languePrefere);
+		    			Langue.ajouterLangue(languePrefere);
 		    			continu=false;
 		    		}else if(rep=="non") {
 					    scanner2.close();

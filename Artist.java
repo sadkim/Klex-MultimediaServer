@@ -108,4 +108,14 @@ public class Artist {
 		statement.executeQuery();
 		BdClass.getConnection().commit();
 	}
+	
+	public boolean ArtistExiste(String nomArtiste) {
+		//TODO
+		return true;
+	}
+	
+	public int getNumArtist() {
+		//TODO
+		return 0;
+	}
 }
