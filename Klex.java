@@ -20,7 +20,9 @@ public class Klex {
 	    	System.out.println("tappez inscription si vous êtes ici pour la première fois");
 	    	System.out.println("tappez aide si vous avez besoin d'aide fonction pas encore disponible");
 	    	System.out.println("tappez exit pour quitter lapplication");
+			/* C'est uniquement pour pouvoir tester la validité du code ajouté :) */
 			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
+			System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "connection":
@@ -69,9 +71,12 @@ public class Klex {
 				}
 	    		break;
 			case "ajout_artiste":
-				Artist.addArtist(scanner);
+				Artist.readArtistInfo(scanner);
 				break;
-	    	
+	    
+			case "ajout_logiciel":
+				Logiciel.readLogicielInfo(scanner);
+				break;
 			case "exit":
 	    		continuer = false;
 	    		break;
