@@ -23,7 +23,7 @@ public class Klex {
 			/* C'est uniquement pour pouvoir tester la validité du code ajouté :) */
 			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
 			System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
-			System.out.println("tapez ajout_fluxVideo si vous voulez ajouter un nouveau logiciel");
+			System.out.println("tapez ajout_flux si vous voulez ajouter un nouveau logiciel");
 			System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
 			System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
 			
@@ -81,32 +81,51 @@ public class Klex {
 	    
 			case "ajout_logiciel":
 				Logiciel.readLogicielInfo(scanner);
-				break;
-			case "ajout_fluxVideo":
-				System.out.println("Veuillez taper votre idFichier");
+				break;	
+				
+				//------------------------------------------------------------------------//
+				//																		  //
+				//				Si l'utilisateur veut ajouter un Flux : 				  //
+				//																		  //
+				//																		  //
+				//------------------------------------------------------------------------//
+				
+			case "ajout_flux":
+				
+				System.out.println("Veuillez taper le type de votre flux parmi [video | audio | text] : \n");
+				String type = scanner.nextLine();
+				System.out.println("Veuillez taper votre idFichier: \n");
 				int idFichier =Integer.parseInt(scanner.nextLine());
-				System.out.println("Veuillez taper votre debit");
+				System.out.println("Veuillez taper votre debit: \n");
 				int debit =Integer.parseInt(scanner.nextLine());
-				System.out.println("Veuillez taper votre idFichier");
-				int resLargeurVid =Integer.parseInt(scanner.nextLine());
-				System.out.println("Veuillez taper votre idFichier");
-				int resHauteurVid =Integer.parseInt(scanner.nextLine());
-				System.out.println("Veuillez taper votre codec");
+				System.out.println("Veuillez taper votre codec: \n");
 				String codec =scanner.nextLine();
-		    	System.out.println("choisissez votre langue préferée");
+		    	System.out.println("choisissez votre langue préferée: \n");
+		    	
+		    	int resLargeurVid = 0, resHauteurVid = 0, echantillonage = 0;
 		    	try {
 					Langue.languesDisponibles();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-	    		String fluxLang =scanner.nextLine();
-
-	    		try {
-	    			FLuxVideo.addFluxVideo(idFichier,fluxLang,codec,debit,resLargeurVid,resHauteurVid);
+	    		String fluxLang = scanner.nextLine();
+	    		if(type == "video") {
+	    			System.out.println("Veuillez taper votre resLargeurVid");
+	    			resLargeurVid =Integer.parseInt(scanner.nextLine());
+					System.out.println("Veuillez taper votre resHauteurVid");
+					resHauteurVid =Integer.parseInt(scanner.nextLine());
+	    		}
+	    		else if (type == "audio") {
+	    			System.out.println("Veuillez taper votre echantillonage");
+	    			echantillonage = Integer.parseInt(scanner.nextLine());
+	    		}
+				try {
+	    			Flux.addFlux(type,idFichier,fluxLang,codec,debit,resLargeurVid,resHauteurVid,echantillonage);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 				break;
+				
 				
 			case "ajout_album":
 				System.out.println("Nom du album?");
