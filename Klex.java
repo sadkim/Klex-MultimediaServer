@@ -57,10 +57,10 @@ public class Klex {
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-	    		String langue =scanner.nextLine();
+	    		String langue1 =scanner.nextLine();
 
 	    		try {
-					User user1 = new User(email1, nom, prenom, age, password1, langue);
+					User user1 = new User(email1, nom, prenom, age, password1, langue1);
 				} catch (EmailAlreadyExistsException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {

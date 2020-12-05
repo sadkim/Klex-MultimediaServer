@@ -3,9 +3,34 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import except.FilmDoesNotExistException;
+
 
 public class Film {
-	public static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche, Scanner scanner) throws SQLException {
+	private String titre;
+	private int anneeSortie;
+	public String getTitre() {
+		return titre;
+	}
+
+	public int getAnneeSortie() {
+		return anneeSortie;
+	}
+
+	public Film(String titre, int anneeSortie) throws SQLException, FilmDoesNotExistException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement("Select * From Film where Titre = ? and anneeSortie = ?");
+		statement.setString(1, titre);
+		statement.setInt(2, anneeSortie);
+		ResultSet resultat =statement.executeQuery();
+		if(resultat.next()) {
+			this.titre = resultat.getString("titre");
+			this.anneeSortie = resultat.getInt("anneeSortie");
+		}else {
+			throw new FilmDoesNotExistException("le titre ou la date du film est erroné");
+		}
+	}
+
+	public static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche, fichier Fichier, Scanner scanner) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("Select * From Film where Titre = ? and anneeSortie = ?");
 		statement.setString(1, titre);
 		statement.setInt(2, anneeSortie);

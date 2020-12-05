@@ -1,2 +1,4 @@
 /NoSuchUserException.class
 /EmailAlreadyExistsException.class
+/FilmAlreadyExistsException.class
+/FilmDoesNotExistException.class
