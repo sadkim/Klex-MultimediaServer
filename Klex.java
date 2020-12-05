@@ -24,6 +24,9 @@ public class Klex {
 			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
 			System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
 			System.out.println("tapez ajout_fluxVideo si vous voulez ajouter un nouveau logiciel");
+			System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
+			System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
+			
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "connection":
@@ -103,6 +106,24 @@ public class Klex {
 					e.printStackTrace();
 				}
 				break;
+				
+			case "ajout_album":
+				System.out.println("Nom du album?");
+				String titre = scanner.nextLine();
+				System.out.println("Nom de l'Artist?");	
+				String nomArtist = scanner.nextLine();
+				System.out.println("Date de Sortie? (sous la forme AAAA-MM-JJ");
+				String dateSortie = scanner.nextLine();
+				System.out.println("URL vers l'album?");
+				String URLAlbum = scanner.nextLine();
+				try {
+					Album.addAlbum(titre, nomArtist, dateSortie, URLAlbum);
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+				
 			case "exit":
 	    		continuer = false;
 	    		break;

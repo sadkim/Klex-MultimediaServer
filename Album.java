@@ -5,10 +5,14 @@ import java.sql.SQLException;
 public class Album {
 	
 	
-	public static void addAlbum(String titre, int numArtiste,String dateSortie, String URL) throws SQLException {
+	public static void addAlbum(String titre, String Artiste,String dateSortie, String URL) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ALBUM where TitreAlbum = ? and NumArtiste = ?");
 		statement.setString(1,titre);
-		statement.setInt(2, numArtiste);
+		
+		/**Cherche numéro de l'artiste associé**/
+		//TODO
+		int NumArtiste = Artist.getNumArtiste();	//pas fini
+		statement.setInt(2,NumArtiste);
 		ResultSet resultat = statement.executeQuery();
 		
 		if (resultat.next()) {		//Un tel titre + numéro d'artist existe.
