@@ -47,7 +47,7 @@ CREATE TABLE Artist (
 CREATE TABLE Flux(
 	NoFlux INT NOT NULL PRIMARY KEY,
 	Debit INT NOT NULL,
-	Type varchar(255) NOT NULL CHECK(Type = 'audio' OR Type= 'video' OR Type= 'text'),
+	TypeFlux varchar(255) NOT NULL CHECK(TypeFlux = 'audio' OR TypeFlux= 'video' OR TypeFlux= 'text'),
 	ResLargeurVid INT ,
 	ResLongeurVid INT,
 	Echantillonage INT CHECK(Echantillonage = 16 OR Echantillonage=24 OR Echantillonage=32),
@@ -60,9 +60,9 @@ CREATE TABLE Flux(
      	ON DELETE CASCADE,
 	constraint FluxFichier FOREIGN KEY (idFichier) REFERENCES Fichier(idFichier)  
      	ON DELETE CASCADE,
-	constraint TypeFichier CHECK((echantillonage != NULL AND ResLargeurVid = NULL AND ResLongeurVid=NULL  AND Type = 'audio')
-	OR (ResLargeurVid != NULL AND ResLongeurVid!=NULL AND echantillonage = NULL AND Type = 'video') 
-	OR (Type = 'text' AND echantillonage = NULL AND ResLargeurVid = NULL AND  ResLongeurVid = NULL))
+	constraint TypeFichier CHECK((echantillonage != NULL AND ResLargeurVid = NULL AND ResLongeurVid=NULL  AND TypeFlux = 'audio')
+	OR (ResLargeurVid != NULL AND ResLongeurVid!=NULL AND echantillonage = NULL AND TypeFlux = 'video') 
+	OR (TypeFlux = 'text' AND echantillonage = NULL AND ResLargeurVid = NULL AND  ResLongeurVid = NULL))
 );
 
 
@@ -95,7 +95,7 @@ CREATE TABLE URLExtPhoto(
     ON DELETE CASCADE
 );
 
-
+/* Le type de la variable duree est a optimiser */
 CREATE TABLE Pistes(
 	idAlbum INT NOT NULL,
 	numPiste INT NOT NULL,
