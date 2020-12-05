@@ -9,3 +9,10 @@
 /CategorieMusique.class
 /CategorisationFilm.class
 /CategorisationPiste.class
+/Album.class
+/FLuxVideo.class
+/FluxAudio.class
+/FluxText.class
+/Piste.class
+/langue$Langue.class
+/Langue.class
