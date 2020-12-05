@@ -101,7 +101,7 @@ public class Klex {
 				String codec =scanner.nextLine();
 		    	System.out.println("choisissez votre langue préferée: \n");
 		    	
-		    	int resLargeurVid, resHauteurVid, echantillonage;
+		    	int resLargeurVid = 0, resHauteurVid = 0, echantillonage = 0;
 		    	try {
 					Langue.languesDisponibles();
 				} catch (SQLException e1) {
