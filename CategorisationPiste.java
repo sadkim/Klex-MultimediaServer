@@ -4,7 +4,7 @@ import java.sql.SQLException;
 public class CategorisationPiste {
 
 	public static boolean ElementsExiste(int idAlbum, int numPiste, String categorie) throws SQLException {
-		return Piste.existePiste(idAlbum, numPiste) && CategorieMusique.ExisteCategMusique(categorie);
+		return Piste.pisteExiste(idAlbum, numPiste) && CategorieMusique.ExisteCategMusique(categorie);
 	}
 	
 	public static void ajouterCategPiste(int idAlbum, int numPiste, String categorie) throws SQLException {
