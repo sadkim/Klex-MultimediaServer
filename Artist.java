@@ -48,13 +48,13 @@ public class Artist {
 	}
 
 	public static void addArtist(Scanner scanner){
-		System.out.println("le nom de l'artiste svp");
+		System.out.println("Le nom de l'artiste svp");
     	String nomArtiste =scanner.nextLine();
     	
-		System.out.println("un url pour sa photo svp");
+		System.out.println("Un url pour sa photo svp");
     	String urlPhotoArtiste =scanner.nextLine();
     	
-		System.out.println("son spécialité principale svp");
+		System.out.println("Sa spécialité principale svp");
     	String specialiteP =scanner.nextLine();
     	
 		String biographie = null;
@@ -73,7 +73,7 @@ public class Artist {
 					lu = true;
 					break;
 				default:
-					System.out.println("un mauvais réponse");
+					System.out.println("Mauvaise réponse");
 					break;
 			}
 		}
@@ -92,7 +92,7 @@ public class Artist {
 				}
 			}
 			else{
-				System.out.println("Erreur de format ressaisissez le");
+				System.out.println("Erreur de format ressaisissez la");
 			}
 		}
 		

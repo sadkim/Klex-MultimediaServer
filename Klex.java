@@ -6,7 +6,7 @@ import except.NoSuchUserException;
 
 public class Klex {
 	public static void main(String[] args)  {
-		String url="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" ;
+		String url ="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" ;
     	String user = "megzaria" ;
     	String passwd = "159357";
 		BdClass.connect(url, user,passwd);	
@@ -52,12 +52,13 @@ public class Klex {
 		    	System.out.println("votre mot de passe svp");
 	    		String password1 =scanner.nextLine();
 		    	System.out.println("choisissez votre langue préferé");
+		    	
 		    	try {
 					langue.languesDisponibles();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-	    		String langue =scanner.nextLine();
+	    		String langue = scanner.nextLine();
 
 	    		try {
 					User user1 = new User(email1, nom, prenom, age, password1, langue);

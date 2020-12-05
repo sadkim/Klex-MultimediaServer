@@ -3,6 +3,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class langue {
+	
 	public static void languesDisponibles() throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Langue");
 		ResultSet resultat =statement.executeQuery();
