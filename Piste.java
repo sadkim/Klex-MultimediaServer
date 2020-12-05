@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 public class Piste {
 	
-	
 	public static void addPiste(int IdAlbum, String titrePiste, int dureePiste) throws SQLException {
 		if (Album.AlbumExiste(IdAlbum)) {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM PISTE where IdAlbum = ? and titrePiste = ?");
@@ -32,4 +31,18 @@ public class Piste {
 			}
 		}
 	}
+	
+	/**Test l'existence d'une piste.
+	 * @throws SQLException **/
+	public static boolean PisteExiste(int IdAlbum, int numPiste) throws SQLException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM PISTES where IdAlbum = ? and numPiste = ?");
+		statement.setInt(1, IdAlbum);
+		statement.setInt(2, numPiste);
+		ResultSet resultat = statement.executeQuery();
+		if (resultat.next()) {
+			return true;
+		}
+		
+		return false; }
+
 }
