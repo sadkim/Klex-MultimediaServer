@@ -10,44 +10,24 @@ import java.util.Scanner;
 public class Artist {
 	private static int numSeqArtist;
 	static {
-		numSeqArtist = 0;
+		try{
+			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT MAX(numArtiste) FROM artist");
+			ResultSet resultat =statement.executeQuery();
+			if(resultat.next()) {
+				numSeqArtist = resultat.getInt("MAX(NUMARTISTE)") + 1;
+			}	
+			else{
+				numSeqArtist = 0;
+			}
+		} catch (SQLException e){
+		}
 	}
-	private int numArtiste;
-	private String nomArtiste;
-	private String urlPhotoArtiste;
-	private String specialitePrincipale;
-	private String biographie;
-	private Date dateNaissance;
 			
-	public int getNumArtiste() {
-		return numArtiste;
-	}
-
-	public String getNomArtiste() {
-		return nomArtiste;
-	}
-
-	public String getUrlPhotoArtiste() {
-		return urlPhotoArtiste;
-	}
-
-	public String getspecialitePricipale() {
-		return specialitePrincipale ;
-	}
-
-	public String getBipgraphie() {
-		return biographie;
-	}
-
-	public Date getDateNaissance() {
-		return dateNaissance;
-	}
-
-	public static void incrementNumSeqArtist(){
+	private static void incrementNumSeqArtist(){
 		numSeqArtist++;
 	}
 
-	public static void addArtist(Scanner scanner){
+	public static void readArtistInfo(Scanner scanner){
 		System.out.println("le nom de l'artiste svp");
     	String nomArtiste =scanner.nextLine();
     	
@@ -97,23 +77,24 @@ public class Artist {
 		}
 		
 		try {
-			Artist artiste1 = new Artist(nomArtiste, urlPhotoArtiste, specialiteP,biographie, dateNaissance);
+			addArtist(nomArtiste, urlPhotoArtiste, specialiteP,biographie, dateNaissance);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
 	}
 
 
-	public Artist(String nomArtiste, String urlPhotoArtiste,String specialiteP, String biographie, Date dateNaissance) throws 
-		SQLException {
-		//TODO /* Artiste deja existant ? */
-		this.numArtiste = numSeqArtist;
+	public static void addArtist(String nomArtiste, String urlPhotoArtiste,String specialiteP,
+			String biographie, Date dateNaissance) throws SQLException {
+		//TODO /* Artiste deja existant ?  Accees concurrent ? */
+		System.out.println("le numSeq est " + numSeqArtist);
+		int numArtiste = numSeqArtist;
 		incrementNumSeqArtist();
 		/* Les variables de la classe : nécessaire ? */
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 "INSERT INTO Artist(NumArtiste,NomArtiste,URLphotoArtiste,biographie, specialitePrincipale, DateNaissance) values(?,?,?,?,?,?)");
 
-		statement.setInt(1, this.numArtiste);
+		statement.setInt(1, numArtiste);
 		statement.setString(2, nomArtiste);
 		statement.setString(3, urlPhotoArtiste);
 		if (biographie == null){
