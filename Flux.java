@@ -1,4 +1,5 @@
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Flux {
@@ -27,18 +28,16 @@ public class Flux {
 			statement.setString(6, langue);
 			statement.setInt(7, idFichier);
 			statement.setString(8, type);
-
-			statement.executeQuery();
+			if (statement.executeQuery().next()) BdClass.getConnection().commit();
+			else BdClass.getConnection().rollback();
 			
-
-			BdClass.getConnection().commit();
 
 		}
 		
 			//----------------------------------------------------------------------------------------------------------------//
 			//																												  //
 			//																												  //
-			//					Fonction supprimant un flux en lui passant les paramètres adéquats.					  //
+			//					Fonction supprimant un flux en lui passant le numéro et le type du flux.					  //
 			//																												  //
 			//																												  //
 			//																												  //
@@ -57,7 +56,8 @@ public class Flux {
 				statement.executeQuery();
 				
 		
-				BdClass.getConnection().commit();
+				if (statement.executeQuery().next()) BdClass.getConnection().commit();
+				else BdClass.getConnection().rollback();
 		
 			}
 }
