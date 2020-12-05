@@ -16,10 +16,10 @@ public class Klex {
     	System.out.println("bienvenue sur Klex");
 
 	    while(continuer) {
-	    	System.out.println("tappez connection si vous avez déja un compte");
+	    	System.out.println("tappez connection si vous avez déjà un compte");
 	    	System.out.println("tappez inscription si vous êtes ici pour la première fois");
 	    	System.out.println("tappez aide si vous avez besoin d'aide fonction pas encore disponible");
-	    	System.out.println("tappez exit pour quitter lapplication");
+	    	System.out.println("tappez exit pour quitter l'application");
 			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
