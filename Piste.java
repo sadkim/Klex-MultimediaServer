@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 public class Piste {
 	
+	
 	public static void addPiste(int IdAlbum, String titrePiste, int dureePiste) throws SQLException {
 		if (Album.AlbumExiste(IdAlbum)) {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM PISTE where IdAlbum = ? and titrePiste = ?");
