@@ -5,16 +5,22 @@ import java.util.Scanner;
 
 
 public class Film {
-	public static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche, Scanner scanner) throws SQLException {
+	
+	public static boolean existeFilm(String titre, int anneeSortie) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("Select * From Film where Titre = ? and anneeSortie = ?");
 		statement.setString(1, titre);
 		statement.setInt(2, anneeSortie);
 		ResultSet resultat =statement.executeQuery();
-		if(resultat.next()) {
-			System.out.println("le film est déja dans la base de données vous pouvez lire ses fichiers ou ajouter de nouveau tappez help pour avoir de l'aide ");
+		return resultat.next();
+	}
+
+	public static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche, Scanner scanner) throws SQLException {
+		boolean existe = existeFilm(titre, anneeSortie);
+		if(existe) {
+			System.out.println("Ce film est déjà dans la base de données vous pouvez lire ses fichiers ou ajouter de nouveau tappez help pour avoir de l'aide ");
 		}
 		else {
-		statement = BdClass.getConnection().prepareStatement("INSERT INTO Film (Titre, anneeSortie, Resume, ageMin, UrlAffiche) values(?,?,?,?,?)");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO Film (Titre, anneeSortie, Resume, ageMin, UrlAffiche) values(?,?,?,?,?)");
 		statement.setString(1, titre);
 		statement.setInt(2, anneeSortie);
 		if(Resume.equals("")) {

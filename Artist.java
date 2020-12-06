@@ -15,6 +15,7 @@ public class Artist {
 	}
 	
 	public static void readArtistInfo(boolean enCascade) { // A appeler a partir de album ou film pour creer un artiste 
+	
 		System.out.println("le nom de l'artiste svp");
     	String nomArtiste = Klex.scanner.nextLine();
     	
@@ -40,7 +41,7 @@ public class Artist {
 					lu = true;
 					break;
 				default:
-					System.out.println("un mauvais réponse");
+					System.out.println("Mauvaise réponse");
 					break;
 			}
 		}
@@ -59,7 +60,7 @@ public class Artist {
 				}
 			}
 			else{
-				System.out.println("Erreur de format ressaisissez le");
+				System.out.println("Erreur de format ressaisissez la");
 			}
 		}
 		

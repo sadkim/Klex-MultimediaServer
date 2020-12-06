@@ -12,22 +12,31 @@ public class Album {
 			return;
 		}
 		
+		/* Cherche numéro de l'artiste associé */
+
+		int NumArtiste;	
+		if (Artist.ArtisteExiste(Artiste)){
+			NumArtiste = Artist.getNumArtiste(Artiste);
+		}
+		else {
+			/*Si l'artist saisi par l'utilisateur n'existe pas, faudra en créer un d'abord.*/
+			System.out.println("L'artist n'existe pas dans le BD");
+			return;
+		}
+		
+		/* Test l'existence d'un Album avec ce titre + artiste */
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 				"SELECT * FROM ALBUM where TitreAlbum = ? and NumArtiste = ?");
 		statement.setString(1,titre);
-		
-		/* Cherche numéro de l'artiste associé */
-
-		int NumArtiste = Artist.getNumArtiste(Artiste);
 		statement.setInt(2,NumArtiste);
 		ResultSet resultat = statement.executeQuery();
-		
 		if (resultat.next()) {		//Un tel titre + numéro d'artist existe.
 			System.out.println("L'album est déjà dans le BD.");
 		}
 		else {
+			/* Ajout d'un nouveau album */
 			statement = BdClass.getConnection().prepareStatement(
-					"INSERT INTO Album(idAlbum, TitreAlbum, NumArtiste, DateSortieAlbum, URLimgPochette) "
+				"INSERT INTO Album(idAlbum, TitreAlbum, NumArtiste, DateSortieAlbum, URLimgPochette) "
 					+ "values(idAlbumSeq.nextval, ?, ?, TO_DATE(?, ‘YYYY-MM-DD’), ?)");
 			
 			statement.setString(1, titre);
@@ -37,6 +46,7 @@ public class Album {
 			statement.executeQuery();
 			BdClass.getConnection().commit();
 		}
+
 		/* Forcer l'ajout d'une categorie  : puisque l'ajout des pistes n'est pas obligatoires on commit apres l'ajout 
 		 * des categories */
 		System.out.println("Maintenant il faut ajouter une categorie");
@@ -105,8 +115,8 @@ public class Album {
 		return -1;
 	}
 	
-
 	/**Renvoyer true si un tel album existe**/
+	/**Tester l'existence d'un album à partir de son Identifiant**/
 	public static boolean AlbumExiste(int IdAlbum) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ALBUM where IdAlbum = ?");
 		statement.setInt(1, IdAlbum);
@@ -115,5 +125,5 @@ public class Album {
 			return true;
 		}
 		return false;
-	}
+	} 
 }

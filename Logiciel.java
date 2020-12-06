@@ -43,7 +43,7 @@ public class Logiciel {
 					lu = true;
 					break;
 				default:
-					System.out.println("un mauvais réponse");
+					System.out.println("Mauvaiss réponse");
 					break;
 			}
 		}
