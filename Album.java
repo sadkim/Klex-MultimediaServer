@@ -2,9 +2,47 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 public class Album {
+
+	public static void readInfoAlbum () {
+		System.out.println("Nom du album?");
+		String titre = Klex.scanner.nextLine();
+		
+		System.out.println("Nom de l'Artist?");	
+		String nomArtist = Klex.scanner.nextLine();
+			
+		System.out.println("Date de Sortie? (sous la forme AAAA-MM-JJ");
+		boolean dateLu = false;
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateSortie = null;
+		while (!dateLu){
+			String date = Klex.scanner.nextLine();
+			if(date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+				try{
+					dateSortie = f.parse(date);
+					dateLu = true;
+				} catch (ParseException e){
+				}
+			}
+			else{
+				System.out.println("Erreur de format ressaisissez la");
+			}
+		}
+
+		System.out.println("URL vers l'album?");
+		String URLAlbum = Klex.scanner.nextLine();
+		try {
+			Album.addAlbum(titre, nomArtist, dateSortie, URLAlbum);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}	
+	}
 	
 	public static void addAlbum (String titre, String Artiste, Date dateSortie, String URL) throws SQLException {
 		

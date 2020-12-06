@@ -19,7 +19,8 @@ public class Film {
 	}
 
 	public Film(String titre, int anneeSortie) throws SQLException, FilmDoesNotExistException {
-		PreparedStatement statement = BdClass.getConnection().prepareStatement("Select * From Film where Titre = ? and anneeSortie = ?");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+				"Select * From Film where Titre = ? and anneeSortie = ?");
 		statement.setString(1, titre);
 		statement.setInt(2, anneeSortie);
 		ResultSet resultat =statement.executeQuery();
@@ -146,7 +147,8 @@ public class Film {
 
     		}
 
-		//TODO ne modifie pas cette ligne pourquoi tu l'a modifier c'est moi qui me charge de ca et non le comit ne se fait pas ici il se fait aprés quand on ajoute le fichier associé
+		//TODO ne modifie pas cette ligne pourquoi tu l'a modifier c'est moi qui me 
+		//charge de ca et non le comit ne se fait pas ici il se fait aprés quand on ajoute le fichier associé
 		}
 	}
 	

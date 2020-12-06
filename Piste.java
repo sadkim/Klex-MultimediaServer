@@ -69,7 +69,7 @@ public class Piste {
 				}
 
 				/**Association Piste et fichier**/
-				//TODO doit etre forcee 
+				//TODO doit etre forcee : au moins un fichier  : les lfux seront frocés dans la création fichier 
 				
 				//ici le commit
 				boolean confirme = Confirmation.confirmerSansCascade("Voulez vous confirmer la création de la piste ? ");
