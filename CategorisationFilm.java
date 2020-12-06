@@ -1,5 +1,6 @@
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 
 public class CategorisationFilm {
 
@@ -15,7 +16,7 @@ public class CategorisationFilm {
 
 		statement.setString(1, titre);
 		statement.setInt(2, anneeSortie);
-		statement.setString(3, categorie);
+		statement.setString(3, c);
 		ResultSet resultat =statement.executeQuery();
 		return resultat.next();
 	}
@@ -24,26 +25,31 @@ public class CategorisationFilm {
 	public static boolean readInfoCategoFilm(){
 		System.out.println("inserez les donnees du film ");
 		//TODO : ajout de la categorisation depuis l'exterieur 
+		return false;
 	}
 	
 	/** Permet de categoriser un film  directement apres sa creation : sans commiter **/
 	public static boolean readInfoCategoFilm(String titre , int anneeSortie, boolean enCascade) {
 		
 		System.out.println("Insérez le nom de la catégorie");
-		String categorie = Klex.scanner;
-		return associerFilmCateg(titre, anneeSortie, enCascade);
-
+		String categorie = Klex.scanner.nextLine();
+		try{
+			return associerFilmCateg(titre, anneeSortie, categorie, enCascade);
+		} catch (SQLException e){
+		}
+		return false;
 	}
 	
 	/** Faire l'association **/
-	public static boolean associerFilmCateg(String titre, int anneeSortie, String categorie) throws SQLException {
-		boolean existe = ElementsExiste(titre, anneeSortie, categorie);
-		boolean assoExistant = categorisationFilmExist(titre, anneeSortie, categorie);
-		if (existe && !assExistant) {
-			ajouterCategFilm(titre, anneeSortie, categorie);
-			return true;
-		}
-		return false;
+	public static boolean associerFilmCateg(String titre, int anneeSortie, String categorie, boolean enCascade) 
+		throws SQLException {
+			boolean existe = ElementsExiste(titre, anneeSortie, categorie);
+			boolean assoExistant = CategorisationFilmExist(titre, anneeSortie, categorie);
+			if (existe && !assoExistant) {
+				ajouterCategFilm(titre, anneeSortie, categorie, enCascade);
+				return true;
+			}
+			return false;
 	}
 	
 	/** Permet d'ajouter la categorisation **/

@@ -40,7 +40,7 @@ public class CategorieFilm {
 		statement.setString(1, categorie);
 		statement.executeQuery();
 		if (!onCascade){
-			Confirmation.confirmerSansCascade();
+			Confirmation.confirmerSansCascade("Voulez vous confirmer cette catégorisation ? ");
 		}
 	}
 	
