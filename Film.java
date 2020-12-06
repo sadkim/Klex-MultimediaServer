@@ -1,6 +1,7 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.Scanner;
 
 
@@ -15,10 +16,35 @@ public class Film {
 		ResultSet resultat =statement.executeQuery();
 		return resultat.next();
 	}
+	
+	/** Permet de lire les informations du film a partir de l'interface Klex */
+	public static void readInfoFilm() {
+		System.out.println("Nom du film ? ");
+		String titre = Klex.scanner.nextLine();
+		
+		System.out.println("Annee de sortie du film ? ");	
+		int anneeSortie = Klex.scanner.nextInt();
+			
+		System.out.println("Un résumé du film ? ");
+		String resume  = Klex.scanner.nextLine();
+		
+		System.out.println("Un âge minimum pour le film ? ");	
+		int ageMin = Klex.scanner.nextInt();
+		
+		System.out.println("l'url de l'affiche du film ?");
+		String urlAffiche = Klex.scanner.nextLine();
+
+		try {
+			addFilm (titre, anneeSortie, resume, ageMin, urlAffiche);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}	
+	}
+	
 
 	/** Permer d'ajouter un film **/
-	public static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche, Scanner scanner)
-		throws SQLException {
+	public static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche) throws SQLException {
 		
 		boolean existe = existeFilm(titre, anneeSortie);
 		if(existe) {
@@ -50,19 +76,19 @@ public class Film {
 				switch (commande) {
 					case "Categoriser":
 						Savepoint svptCategorisation = BdClass.getConnection().setSavepoint("svpCategorisation");
-						boolean ajoute = readInfoCategoFilm (titre , anneeSortie, true);
+						boolean ajoute = CategorisationFilm.readInfoCategoFilm (titre , anneeSortie, true);
 						if (ajoute){
-							contrainteSatis = contraintSatis || confirmerAvecCascade(
-								"Voulez vous confirmer la catégorisation [Y/N]", svpCategorisation);
+							contrainteSatis = contrainteSatis || Confirmation.confirmerAvecCascade(
+								"Voulez vous confirmer la catégorisation [Y/N]", svptCategorisation);
 						}
 						break;
 
 					case "nouvelleCategorie":
 						Savepoint ajoutCategorie = BdClass.getConnection().setSavepoint("svpCategorie");
-						lireCategFilm (true);
-						boolean ajoute = confirmerAvecCascade( "Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]",
-								svpCategorie);
-						if (ajoute){ System.out.println("maintenant, il faut ajouter le film à cette catégorie") };
+						CategorieFilm.lireCategFilm (true);
+						boolean ajoute2 = Confirmation.confirmerAvecCascade(
+								"Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]", ajoutCategorie);
+						if (ajoute2){ System.out.println("maintenant, il faut ajouter le film à cette catégorie");};
 						break;
 				
 					case "annuler":
@@ -75,7 +101,7 @@ public class Film {
 							System.out.println("vous devez associer au moins une catégorie à ce film  ");
 							break;
 						}
-						fini = true;
+						categorisationFini = true;
 						break;
 					default :
 						System.out.println("mauvais reponse");
@@ -85,12 +111,13 @@ public class Film {
 			System.out.println("à chaque film doit être associée au moins un fichier ajouter un fichier" +
 					"en tappant ajouteFichier ou bien annulez la création en tappant autre chose");
 			
-			String commande = scanner.nextLine();
+			String commande = Klex.scanner.nextLine();
     		if(commande.equals("ajouteFichier")) {
     		//TODO
     		}else {
     			BdClass.getConnection().rollback();
     			System.out.println("ajout film annulé");
+				return;
 
     		}
 			BdClass.getConnection().commit(); //<<================ ici le commit : on doit forcer la creation des fichier 
