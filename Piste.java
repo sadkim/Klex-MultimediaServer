@@ -1,6 +1,7 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 
 public class Piste {
 	
@@ -53,7 +54,7 @@ public class Piste {
 							lireCategMusique(true);
 							boolean ajoute = confirmerAvecCascade( "Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]",
 								svpCategorie);
-							if (ajoute){ System.out.println("maintenant, il faut ajouter l'album à cette catégorie") };
+							if (ajoute){ System.out.println("maintenant, il faut ajouter l'album à cette catégorie"); };
 							break;
 
 						case "fini" :

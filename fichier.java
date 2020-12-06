@@ -8,7 +8,7 @@ import except.FilmDoesNotExistException;
 
 public class fichier {
 		public static void addFichier(float tailleFichier,User user, Scanner scaner) throws SQLException {
-			ajouterFichierEntree(tailleFichier, user);
+			ajouterFichierEntree(tailleFichier);
 			System.out.println("vous voulez lier le fichiel à un: film ou piste");
 			String categorie = scaner.nextLine();
 			if(categorie.equals("film")){
@@ -25,9 +25,9 @@ public class fichier {
 						try {
 							Film film =new Film(titre,annee);
 							contenuMultimedia(film.getTitre(), film.getAnneeSortie(),0,0);
-
+							Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et sont reliés");
 							repeat = false;
-								//TODO Ccategoriser
+							//TODO ici creation d'un nouveaux flux
 							} catch (SQLException e) {
 								e.printStackTrace();
 							} catch (FilmDoesNotExistException e) {
@@ -38,12 +38,13 @@ public class fichier {
 						}else if(choix.equals("nouveau")) {
 							//TODO
 							repeat = false;
-						}else if(choix.equals("annuler")) {
+						}else if(choix.equals("annuler")) 								//TODO Ccategoriser
+{
 							repeat = false;
 						}else if(choix.equals("affiche")) {
 							System.out.println("tappez le nom du film pour le chercher ou bien le bouton entrée pour afficher tout les films disponible");
 							String titre = scaner.nextLine();
-							Film.searchFilm(titre, user);
+							Film.searchFilm(titre);
 							repeat = false;
 
 						}else {
@@ -56,16 +57,19 @@ public class fichier {
 				}
 				//TODO
 		}
-		private static void ajouterFichierEntree(float tailleFichier, User user) throws SQLException {
+		private static void ajouterFichierEntree(float tailleFichier) throws SQLException {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO Fichier (idFichier, Date, tailleFichier, Email) values(idFichierSeq.nextval,sysdate,?,?)");
 			statement.setFloat(1, tailleFichier);
-			statement.setString(2, user.getEmail());
+			statement.setString(2, User.getEmail());
 			statement.executeQuery();
 			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier ajouté");
 		}
 		
-		public static void addFichier(float tailleFichier,User user,Film film,Scanner scaner/* TODO ajouter piste ici  pour qud c'est prêt*/) throws SQLException {
-			ajouterFichierEntree(tailleFichier, user);
+		public static void addFichier(float tailleFichier,Film film,Scanner scaner/* TODO ajouter piste ici  pour qud c'est prêt*/) throws SQLException {
+			ajouterFichierEntree(tailleFichier);
+			contenuMultimedia(film.getTitre(), film.getAnneeSortie(), 0, 0);
+			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et sont reliés");
+
 
 		}
 		private static void contenuMultimedia(String Titre, int anneeSortie,int IdAlbum, int numPiste ) throws SQLException {// ne pas utiliser avant de verifier que le film ou l'album existent bien

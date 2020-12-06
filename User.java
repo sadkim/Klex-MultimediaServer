@@ -7,11 +7,11 @@ import except.EmailAlreadyExistsException;
 import except.NoSuchUserException;
 
 public class User {
-		private String email;
-		private String nom;
-		private String prenom;
-		private int age;
-		private String languePrefere;
+		private static String email;
+		private static String nom;
+		private static String prenom;
+		private static int age;
+		private static String languePrefere;
 		
 		
 		public User(String email,String codeAcces) throws NoSuchUserException, SQLException  {
@@ -70,32 +70,37 @@ public class User {
 		
 		
 		private void initialiseAtribut(ResultSet resultat) throws SQLException {
-			this.email =resultat.getString("email");
-			this.nom =resultat.getString("nom");
-			this.prenom =resultat.getString("prenom");
-			this.age =resultat.getInt("age");
-			this.languePrefere = resultat.getString("languePrefere");
-			System.out.println("Vous êtes bien connecté au compte de " +this.prenom +" " + this.nom );
+			User.email =resultat.getString("email");
+			User.nom =resultat.getString("nom");
+			User.prenom =resultat.getString("prenom");
+			User.age =resultat.getInt("age");
+			User.languePrefere = resultat.getString("languePrefere");
+			System.out.println("Vous êtes bien connecté au compte de " +User.prenom +" " + User.nom );
 		}
 		
 		
-		public String getEmail() {
+		public static String getEmail() {
 			return email;
 		}
 
 
-		public String getNom() {
+		public static String getNom() {
 			return nom;
 		}
 
 
-		public String getPrenom() {
+		public static String getPrenom() {
 			return prenom;
 		}
 
 
-		public int getAge() {
+		public static int getAge() {
 			return age;
+		}
+
+
+		public static String getLanguePrefere() {
+			return languePrefere;
 		}
 		
 		

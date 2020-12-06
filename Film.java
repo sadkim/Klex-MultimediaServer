@@ -1,6 +1,7 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.Scanner;
 
 import except.FilmDoesNotExistException;
@@ -112,7 +113,10 @@ public class Film {
 			
 			String commande = scanner.nextLine();
     		if(commande.equals("ajouteFichier")) {
-    		//TODO
+    			System.out.println("quelle est la taille de votre fichier");
+    			float taille = Float.parseFloat(scanner.nextLine());
+
+    		fichier.addFichier(taille, new Film(titre, anneeSortie), scanner);
     		}else {
     			BdClass.getConnection().rollback();
     			System.out.println("ajout film annulé");
@@ -123,16 +127,22 @@ public class Film {
 		}
 	}
 	
-	public static void searchFilm(String name, User user) throws SQLException {
+	public static void searchFilm(String name) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 				"SELECT * FROM film where titre like'*?*' and ageMin < ? order by titre");
 		statement.setString(1, name);
-		statement.setInt(2, user.getAge());
+		statement.setInt(2, User.getAge());
 		ResultSet resultat =statement.executeQuery();
 		System.out.println("titre | annéeSortie | Resume | UrlAffiche");
 		while(resultat.next()) {
 			System.out.println(resultat.getString("Titre")+" | "+ resultat.getString("anneeSortie") + 
 					" | "+ resultat.getString("Resume") +" | "+ resultat.getString("urlAffiche"));
 		}
+	}
+
+	
+	public static void collectFilmData() {
+		//TODO
+		return;
 	}
 }
