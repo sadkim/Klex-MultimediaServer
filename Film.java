@@ -4,8 +4,33 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Scanner;
 
+import except.FilmDoesNotExistException;
+
 
 public class Film {
+	private String titre;
+	private int anneeSortie;
+	public String getTitre() {
+		return titre;
+	}
+
+	public int getAnneeSortie() {
+		return anneeSortie;
+	}
+
+	public Film(String titre, int anneeSortie) throws SQLException, FilmDoesNotExistException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement("Select * From Film where Titre = ? and anneeSortie = ?");
+		statement.setString(1, titre);
+		statement.setInt(2, anneeSortie);
+		ResultSet resultat =statement.executeQuery();
+		if(resultat.next()) {
+			this.titre = resultat.getString("titre");
+			this.anneeSortie = resultat.getInt("anneeSortie");
+		}else {
+			throw new FilmDoesNotExistException("le titre ou la date du film est erroné");
+		}
+	}
+
 	
 	/** Permet de verifier si un film existe deja dans la base de donnee **/
 	public static boolean existeFilm(String titre, int anneeSortie) throws SQLException {
@@ -120,8 +145,8 @@ public class Film {
 				return;
 
     		}
-			BdClass.getConnection().commit(); //<<================ ici le commit : on doit forcer la creation des fichier 
 
+		//TODO ne modifie pas cette ligne pourquoi tu l'a modifier c'est moi qui me charge de ca et non le comit ne se fait pas ici il se fait aprés quand on ajoute le fichier associé
 		}
 	}
 	
