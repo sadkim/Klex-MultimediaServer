@@ -3,6 +3,9 @@ import java.sql.SQLException;
 import java.util.Scanner;
 import except.EmailAlreadyExistsException;
 import except.NoSuchUserException;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
 
 public class Klex {
 
@@ -140,7 +143,23 @@ public class Klex {
 				System.out.println("Nom de l'Artist?");	
 				String nomArtist = scanner.nextLine();
 				System.out.println("Date de Sortie? (sous la forme AAAA-MM-JJ");
-				String dateSortie = scanner.nextLine();
+				boolean dateLu = false;
+				SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+				Date dateSortie = null;
+				while (!dateLu){
+					String date = scanner.nextLine();
+					if(date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+						try{
+							dateSortie = f.parse(date);
+							dateLu = true;
+						} catch (ParseException e){
+						}
+					}
+					else{
+						System.out.println("Erreur de format ressaisissez la");
+					}
+				}
+
 				System.out.println("URL vers l'album?");
 				String URLAlbum = scanner.nextLine();
 				try {

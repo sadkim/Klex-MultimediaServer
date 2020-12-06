@@ -1,23 +1,38 @@
 import java.util.Scanner;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 
 /** Un routine pour confirmer une insertion qui n'est pas fait en cascade **/
 
 public class Confirmation {
-	public static void confirmerSansCascade() throws SQLException {
-		System.out.println("Vous confirmez cet ajout? [Y/N]");
-    	boolean bienLu = false;
-		while (!bienLu){
-		String reponse = Klex.scanner.nextLine();
+
+	public static boolean confirmerSansCascade(String message) throws SQLException {
+		while (true){
+			System.out.println(message);
+			String reponse = Klex.scanner.nextLine();
 			switch(reponse){
 				case "Y":
-					bienLu = true;
 					BdClass.getConnection().commit(); 
-					break;
+					return true;
 				case "N":
-					bienLu = false;
 					BdClass.getConnection().rollback();
-					break;
+					return false;
+				default:
+					System.out.println("mauvais réponse");	
+			}
+		}	
+	}
+
+	public static boolean confirmerAvecCascade(String message, Savepoint svpt) throws SQLException {
+		while (true){
+			System.out.println(message);
+			String reponse = Klex.scanner.nextLine();
+			switch(reponse){
+				case "Y":
+					return true;	
+				case "N":
+					BdClass.getConnection().rollback(svpt);
+					return false;
 				default:
 					System.out.println("mauvais réponse");	
 			}

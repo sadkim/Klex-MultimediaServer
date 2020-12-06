@@ -5,7 +5,8 @@ import java.util.Scanner;
 import java.sql.Savepoint;
 
 public class Logiciel {
-	
+
+	/** Permet de verifier si lo logiciel existe deja **/
 	public static boolean logicielExist(String marqueLogiciel, String modeleLogiciel) throws SQLException{
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 				"Select * From Logiciel where marqueLogiciel = ?   and modeleLogiciel = ?");
@@ -18,6 +19,7 @@ public class Logiciel {
 		return resultat.next();
 	}
 	
+	/** Permet d'ajouter un logiciel depuis la classe Klex **/
 	public static void readLogicielInfo() {
 		System.out.println("Inserer la marque du logiciel svp");
     	String marqueLogiciel = Klex.scanner.nextLine();
@@ -60,15 +62,13 @@ public class Logiciel {
 	public static void addLogiciel(String marqueLogiciel, String modeleLogiciel, Integer resolLargMax,
 			Integer resolHautMax) throws SQLException {
 		
-		/* Un save point pour pouvoir annuler la creation du logiciel */
-    	BdClass.getConnection().setAutoCommit(false);
 		
 		if(logicielExist(marqueLogiciel, modeleLogiciel)) {
-			System.out.println("le logiciel est déjà enregistré dans la base de données" + 
-					" vous pouvez toutefois lui ajouter des codecs");
+			System.out.println("le logiciel est déjà enregistré dans la base de données"); 
 		}
 		
 		else {
+			/* Ajout d'un nouveau logiciel */
 			PreparedStatement statement = BdClass.getConnection().prepareStatement(
 					"INSERT INTO Logiciel(MarqueLogiciel, ModeleLogiciel, resolutionLargMax, resolutionHautMax) values(?,?,?,?)");
 
@@ -82,6 +82,8 @@ public class Logiciel {
 				statement.setInt(4, resolHautMax);
 			}
 			statement.executeQuery();
+			
+			/* Forcer l'ajout d'une association codec logiciel */
 			System.out.println("Maintenant, il faut associer des codecs à ce logiciel");
 			boolean uneAssociationFait = false;
 			boolean fini = false;
@@ -94,16 +96,27 @@ public class Logiciel {
 				String commande = Klex.scanner.nextLine();
 				switch (commande) {
 					case "assoCodecLogiciel":
-						uneAssociationFait = uneAssociationFait || readInfoAssoLogCod(marqueLogiciel,modeleLogiciel);
+						Savepoint svptAssoCodec = BdClass.getConnection().setSavepoint("savepointAssoCodec");
+						boolean ajoute = CodecLogiciel.readInfoAssCodLog(marqueLogiciel, modeleLogiciel, true);
+						if (ajoute){
+							uneAssociationFait = uneAssociationFait || Confirmation.confirmerAvecCascade(
+								"Voulez vous confirmaer cette association ?", svptAssoCodec);
+						}
 						break;
 
 					case "ajoutCodec":
-						uneAssociationFait = uneAssociationFait || readInfoAssoLogNewCod(marqueLogiciel,modeleLogiciel);
+						Savepoint svptAjoutCodec = BdClass.getConnection().setSavepoint("savepointAjoutCodec");
+						Codec.readCodecInfo(true);
+						boolean ajoute2 = Confirmation.confirmerAvecCascade(
+								"Voulez vous confirmaer l'ajout de ce codec ?", svptAjoutCodec);
+						if (ajoute2) {System.out.println("maintenant, vous devez faire l'association");}
 						break;
 				
 					case "annuler":
+						System.out.println("Cet annulation va supprimer le logiciel et les codecs crées avec lui");
 						BdClass.getConnection().rollback();
 						return;
+
 					case "fini" :
 						if (!uneAssociationFait){
 							System.out.println("vous devez associer au moins un codec à votre logiciel");
@@ -116,81 +129,5 @@ public class Logiciel {
 				}
 			}
 		}
-	}
-					
-	
-	private static boolean readInfoAssoLogNewCod(String marqueLogiciel, String modeleLogiciel) 
-			throws SQLException {
-		System.out.println("le codec est directement associé au logiciel aprés l'insertion");
-		
-		Savepoint svptAjoutCodec = BdClass.getConnection().setSavepoint("savepointAjoutCodec");
-		
-		System.out.println("inserez le nom du codec");
-		String c = Klex.scanner.nextLine();
-		boolean codecCree = Codec.addCodec(c, true);
-		if (!codecCree){
-			return false;
-		}
-		
-		System.out.println("Vous confirmez cet ajout? [Y/N]");
-    	boolean bienLu = false;
-		while (!bienLu){
-			String reponse = Klex.scanner.nextLine();
-			switch(reponse){
-				case "Y":
-					bienLu = true;
-					CodecLogiciel.addAssoLogicielCodec(marqueLogiciel, modeleLogiciel, c, true);
-					//BdClass.getConnection().commit(); //<<==== pas de commit ici sinon on va 'commiter' le logiciel  
-					return true;
-				case "N":
-					bienLu = false;
-					BdClass.getConnection().rollback(svptAjoutCodec);
-					return false;
-				default:
-					System.out.println("mauvais réponse");	
-			}
-		}
-		return false;
-	}
-						
-			
-	private static boolean readInfoAssoLogCod(String marqueLogiciel, String modeleLogiciel)
-			throws SQLException {
-		boolean existVerifie = false;
-		boolean fini = false;
-		while (!fini || !existVerifie){
-			Savepoint svptAssoCodec = BdClass.getConnection().setSavepoint("savepointAssoCodec");
-			System.out.println("Veuillez insérer le nom du Codec");
-			String c = Klex.scanner.nextLine();
-			
-			if(Codec.codecExist(c)) { 
-				System.out.println("le codec n'existe pas dans la base ajoutez le");
-				return false;
-			}
-			/* Ajouter l'association */
-			CodecLogiciel.addAssoLogicielCodec(marqueLogiciel, modeleLogiciel, c, true);
-			boolean bienLu = false;
-			while (!bienLu){
-				System.out.println("Tapez[E]pour ajouter plus,[A]pour annuler la création de l'association [F] si c'est terminé");
-    			String reponse = Klex.scanner.nextLine();
-				switch(reponse){
-					case "E":
-						existVerifie = true;
-						bienLu = true;
-						break;
-					case "F":
-						//BdClass.getConnection().commit();  //<<==== pas de commit sinon "on commite la table 
-						return true;
-					
-					case "A":
-						BdClass.getConnection().rollback(svptAssoCodec);
-						bienLu = true;
-						break;
-					default :
-						System.out.println("mauvais réponse");
-				}
-			}
-		}
-		return false;
 	}
 }

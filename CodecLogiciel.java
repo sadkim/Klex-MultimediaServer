@@ -6,6 +6,7 @@ import java.sql.Savepoint;
 
 public class CodecLogiciel {
 	
+	/** Permet de verifier si l'association existe deja **/
 	public static boolean assoCodLogicielExist(String marqueLogiciel, String modeleLogiciel, String c) throws SQLException{
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 				"Select * From CodecLogiciel where marqueLogiciel = ?   and modeleLogiciel = ? and Codec = ? ");
@@ -19,27 +20,43 @@ public class CodecLogiciel {
 		return resultat.next();
 	}
 	
-	public static void addAssoLogicielCodec(String marqueLogiciel, String modeleLogiciel, String codec) throws SQLException {
-		addAssoLogicielCodec(marqueLogiciel, modeleLogiciel, codec, false);
+	/** Permet d'ajouter une association codec logiciel depuis la classe Klex **/
+	public static boolean readInfoAssCodLog()throws SQLException {
+		System.out.println("Inserer la marque du logiciel svp");
+    	String marqueLogiciel = Klex.scanner.nextLine();
+    	
+		System.out.println("Insérer le modèle du logiciel svp");
+    	String modeleLogiciel = Klex.scanner.nextLine();
+		
+		if (!Logiciel.logicielExist(marqueLogiciel, modeleLogiciel)){
+			System.out.println("Le logiciel n'existe pas");
+			return false;
+		}
+		return readInfoAssCodLog(marqueLogiciel, modeleLogiciel, false);
 	}
 	
-	public static void addAssoLogicielCodec(String marqueLogiciel, String modeleLogiciel, String codec, boolean enCascade) 
-		throws SQLException {
-		if (assoCodLogicielExist(marqueLogiciel, modeleLogiciel, codec)){
-			System.out.println("le codec et le logiciel sont deja associes");
-			return;	
-		}
-		if (!Codec.codecExist(codec)){
-			System.out.println("le codec n'existe pas, cree le tout d'abord");
-			return;
+	/** Permet d'ajouter une association codec logiciel apres creation de logiciel **/
+
+	public static boolean readInfoAssCodLog(String marqueLogiciel, String modeleLogiciel, boolean enCascade) throws SQLException{
+		System.out.println("Veuillez insérer le nom du Codec");
+		String c = Klex.scanner.nextLine();
+			
+		if(Codec.codecExist(c)) { 
+			System.out.println("le codec n'existe pas dans la base ajoutez le");
+			return false;
 		}
 		
-		// dans ce cas il faut verifier si les donnees existe deja
-		if (!enCascade && !Logiciel.logicielExist(marqueLogiciel, modeleLogiciel)){
-			System.out.println("le logiciel n'existe pas, cree le tout d'abord");
-			return;	
+		return addAssoLogicielCodec(marqueLogiciel, modeleLogiciel, c, enCascade);
+	}
+	
+	public static boolean addAssoLogicielCodec(String marqueLogiciel, String modeleLogiciel, String codec, boolean enCascade) 
+		throws SQLException {
+		
+		if (assoCodLogicielExist(marqueLogiciel, modeleLogiciel, codec)){
+			System.out.println("le codec et le logiciel sont deja associes");
+			return false;	
 		}
-
+		
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 			"insert into CodecLogiciel(MarqueLogiciel, ModeleLogiciel, Codec) values (?, ?, ?)");
 		s.setString(1,marqueLogiciel);
@@ -49,7 +66,8 @@ public class CodecLogiciel {
 
 		if (!enCascade){
 			/* On annule seulement dans ce cas : en cas d'insertions en cascade des savepoints sont utilises */
-			Confirmation.confirmerSansCascade();
+			Confirmation.confirmerSansCascade("Voulez vous confirmer cette association ? ");
 		}
+		return true;
 	}
 }	

@@ -9,12 +9,13 @@ import java.util.Scanner;
 
 public class Artist {
 			
-	/* A appeler directement si on veut creer un artiste */
+	/** A appeler directement si on veut creer un artiste **/
 	public static void readArtistInfo() {
 		readArtistInfo(false);
 	}
 	
-	public static void readArtistInfo(boolean enCascade) { // A appeler a partir de album ou film pour creer un artiste 
+	/** Permet de créer un artiste depuis album ou film : insertion sans commit si enCascade est true **/
+	public static void readArtistInfo(boolean enCascade) {
 	
 		System.out.println("le nom de l'artiste svp");
     	String nomArtiste = Klex.scanner.nextLine();
@@ -73,6 +74,7 @@ public class Artist {
 
 	public static void addArtist(String nomArtiste, String urlPhotoArtiste,String specialiteP, String biographie,
 			Date dateNaissance, boolean enCascade) throws SQLException {
+		
 		if (ArtisteExiste(nomArtiste, urlPhotoArtiste, specialiteP, biographie, dateNaissance)){
 			System.out.println("un artiste existe deja avec ces donnees");
 			return;
@@ -85,8 +87,9 @@ public class Artist {
 			}
 		}
 		
-		PreparedStatement statement = BdClass.getConnection().prepareStatement(
-				"INSERT INTO Artist(NumArtiste,NomArtiste,URLphotoArtiste,biographie, specialitePrincipale, DateNaissance) values( numArtistSeq.nextval,?,?,?,?,?)");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement( 
+				"INSERT INTO Artist(NumArtiste,NomArtiste,URLphotoArtiste,biographie, specialitePrincipale, DateNaissance)"+
+				"values( numArtistSeq.nextval,?,?,?,?,?)");
 
 		statement.setString(2, nomArtiste);
 		statement.setString(3, urlPhotoArtiste);
@@ -99,26 +102,33 @@ public class Artist {
 		statement.setString(5, specialiteP);
 		statement.setDate(6, new java.sql.Date(dateNaissance.getTime()));
 		statement.executeQuery();
+
+		/* Commit si et seulement si l'insertion est faite depuis la classe Klex */
 		if (!enCascade){
-			Confirmation.confirmerSansCascade();
+			Confirmation.confirmerSansCascade("Voulez vous confirmer la création de l'artiste? ");
 		}
 	}
 	
+	/** Permet de savoir si l'artiste existe deja dans la base de donnees */
 	public static boolean ArtisteExiste(String nomArtiste, String urlPhotoArtiste, String specialiteP, 
 			String biographie, Date dateNaissance) throws SQLException {
 
-		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ARTIST where nomArtiste = ? and       urlPhotoArtiste = ?  and biographie = ? and specialitePrincipale = ? and dateNaissance = ? ");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement( "SELECT * FROM ARTIST where nomArtiste = ?" + 
+				"and urlPhotoArtiste = ?  and biographie = ? and specialitePrincipale = ? and dateNaissance = ? ");
 		
 		statement.setString(1, nomArtiste);
 		statement.setString(2, urlPhotoArtiste);
 		statement.setString(3, specialiteP);
 		statement.setString(4, biographie);
+		
 		statement.setDate(5, new java.sql.Date(dateNaissance.getTime()));
 
 		ResultSet resultat = statement.executeQuery();
 		return resultat.next();	
 	}
-			
+		
+	/** Permet de savoir si un artiste existe deja avec le meme nom **/
+
 	public static boolean ArtisteExiste(String nomArtiste) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ARTIST where nomArtiste = ?");
 		statement.setString(1, nomArtiste);
@@ -126,6 +136,8 @@ public class Artist {
 		return resultat.next();	
 	}
 	
+	/** Donne l'identifiant de l'artiste a partir de son nom : pas de fiabilite **/
+
 	public static Integer getNumArtiste(String nomArtiste) throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement("SELECT NumArtiste FROM ARTIST where nomArtiste = ?");
 		s.setString(1, nomArtiste);
