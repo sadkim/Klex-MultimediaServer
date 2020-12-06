@@ -5,12 +5,15 @@ import except.EmailAlreadyExistsException;
 import except.NoSuchUserException;
 
 public class Klex {
+
+	public static Scanner scanner = new Scanner(System.in);
+
 	public static void main(String[] args)  {
 		String url="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" ;
     	String user = "megzaria" ;
     	String passwd = "159357";
 		BdClass.connect(url, user,passwd);	
-	    Scanner scanner = new Scanner(System.in);
+	    //Scanner scanner = new Scanner(System.in);
 	    String commande;
 	    boolean continuer= true;
     	System.out.println("bienvenue sur Klex");
@@ -75,11 +78,11 @@ public class Klex {
 				}
 	    		break;
 			case "ajout_artiste":
-				Artist.readArtistInfo(scanner);
+				Artist.readArtistInfo();
 				break;
 	    
 			case "ajout_logiciel":
-				Logiciel.readLogicielInfo(scanner);
+				Logiciel.readLogicielInfo();
 				break;
 			case "ajout_fluxVideo":
 				System.out.println("Veuillez taper votre idFichier");
