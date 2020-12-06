@@ -15,7 +15,7 @@ public class User {
 		
 		
 		public User(String email,String codeAcces) throws NoSuchUserException, SQLException  {
-			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Utilisateur where email = ? and codeAccess =?");
+			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Utilisateur where email = ? and codeAccess = ?");
 			statement.setString(1, email);
 			statement.setString(2, codeAcces);
 			ResultSet resultat =statement.executeQuery();
@@ -28,36 +28,32 @@ public class User {
 		}
 
 
-		
-
-
-		
 		public User(String email, String nom, String prenom, int age, String codeAcces, String languePrefere) throws  EmailAlreadyExistsException, NoSuchUserException, SQLException {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Utilisateur where email = ?");
 			statement.setString(1, email);
-			ResultSet resultat =statement.executeQuery();
+			ResultSet resultat = statement.executeQuery();
 			if(resultat.next()) {
-				throw new EmailAlreadyExistsException("l'email:" + email +" est déja utilisé vous pouvait vous cennecter directement");
+				throw new EmailAlreadyExistsException("L'email:" + email +" est déja utilisé vous pouvait vous connecter directement");
 			}
 			statement = BdClass.getConnection().prepareStatement("SELECT * FROM langue where langue = ?");
 			statement.setString(1, languePrefere);
 			statement.executeQuery();
 			if(!resultat.next()) {
-			    Scanner scanner2 = new Scanner(System.in);
+			    Scanner scanner = new Scanner(System.in);
 			    boolean continu = true;
 				while(continu) {
-					System.out.println("langue inexistante voulais vous ajouter cette langue oui/non" );
-		    		String rep =scanner2.nextLine();
+					System.out.println("Langue inexistante voulais vous ajouter cette langue oui/non" );
+		    		String rep =scanner.nextLine();
 		    		if(rep.equals("oui")) {
-		    			langue.ajouterLangue(languePrefere);
+		    			Langue.ajouterLangue(languePrefere);
 		    			continu=false;
-		    		}else if(rep=="non") {
-					    scanner2.close();
+		    		} else if(rep=="non") {
+					    scanner.close();
 		    			return;
 		    		}
 
-					}
-			    scanner2.close();
+				}
+			    scanner.close();
 
 			}
 			statement = BdClass.getConnection().prepareStatement("INSERT INTO Utilisateur (email, nom, prenom, age, codeAccess, LanguePREFERE) values(?,?,?,?,?,?)");
@@ -70,16 +66,19 @@ public class User {
 			statement.executeQuery();
 			BdClass.getConnection().commit();
 			initialiseAtribut(resultat);
-
 		}
+		
+		
 		private void initialiseAtribut(ResultSet resultat) throws SQLException {
 			this.email =resultat.getString("email");
 			this.nom =resultat.getString("nom");
 			this.prenom =resultat.getString("prenom");
 			this.age =resultat.getInt("age");
 			this.languePrefere = resultat.getString("languePrefere");
-			System.out.println("vous êtes bien connécté au compte de " +this.prenom +" " + this.nom );
+			System.out.println("Vous êtes bien connecté au compte de " +this.prenom +" " + this.nom );
 		}
+		
+		
 		public String getEmail() {
 			return email;
 		}

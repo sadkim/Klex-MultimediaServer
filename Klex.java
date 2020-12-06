@@ -3,26 +3,36 @@ import java.sql.SQLException;
 import java.util.Scanner;
 import except.EmailAlreadyExistsException;
 import except.NoSuchUserException;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
 
 public class Klex {
+
+	public static Scanner scanner = new Scanner(System.in);
+
 	public static void main(String[] args)  {
-		String url="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" ;
+		String url ="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" ;
     	String user = "megzaria" ;
     	String passwd = "159357";
 		BdClass.connect(url, user,passwd);	
-	    Scanner scanner = new Scanner(System.in);
+	    //Scanner scanner = new Scanner(System.in);
 	    String commande;
 	    boolean continuer= true;
     	System.out.println("bienvenue sur Klex");
 
 	    while(continuer) {
-	    	System.out.println("tappez connection si vous avez déja un compte");
+	    	System.out.println("tappez connection si vous avez déjà un compte");
 	    	System.out.println("tappez inscription si vous êtes ici pour la première fois");
 	    	System.out.println("tappez aide si vous avez besoin d'aide fonction pas encore disponible");
-	    	System.out.println("tappez exit pour quitter lapplication");
+	    	System.out.println("tappez exit pour quitter l'application");
 			/* C'est uniquement pour pouvoir tester la validité du code ajouté :) */
 			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
 			System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
+			System.out.println("tapez ajout_flux si vous voulez ajouter un nouveau logiciel");
+			System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
+			System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
+			
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "connection":
@@ -51,13 +61,14 @@ public class Klex {
 	    		int age =Integer.parseInt(scanner.nextLine());
 		    	System.out.println("votre mot de passe svp");
 	    		String password1 =scanner.nextLine();
-		    	System.out.println("choisissez votre langue préferé");
+		    	System.out.println("choisissez votre langue préferée");
 		    	try {
-					langue.languesDisponibles();
+					Langue.languesDisponibles();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 	    		String langue1 =scanner.nextLine();
+
 
 	    		try {
 					User user1 = new User(email1, nom, prenom, age, password1, langue1);
@@ -71,12 +82,94 @@ public class Klex {
 				}
 	    		break;
 			case "ajout_artiste":
-				Artist.readArtistInfo(scanner);
+				Artist.readArtistInfo();
 				break;
 	    
 			case "ajout_logiciel":
-				Logiciel.readLogicielInfo(scanner);
+				Logiciel.readLogicielInfo();
 				break;
+			case "ajout_fluxVideo":
+				System.out.println("Veuillez taper votre idFichier");
+				//Logiciel.readLogicielInfo();
+				break;	
+				
+				//------------------------------------------------------------------------//
+				//																		  //
+				//				Si l'utilisateur veut ajouter un Flux : 				  //
+				//																		  //
+				//																		  //
+				//------------------------------------------------------------------------//
+				
+			case "ajout_flux":
+				
+				System.out.println("Veuillez taper le type de votre flux parmi [video | audio | text] : \n");
+				String type = scanner.nextLine();
+				System.out.println("Veuillez taper votre idFichier: \n");
+				int idFichier =Integer.parseInt(scanner.nextLine());
+				System.out.println("Veuillez taper votre debit: \n");
+				int debit =Integer.parseInt(scanner.nextLine());
+				System.out.println("Veuillez taper votre codec: \n");
+				String codec =scanner.nextLine();
+		    	System.out.println("choisissez votre langue préferée: \n");
+		    	
+		    	int resLargeurVid = 0, resHauteurVid = 0, echantillonage = 0;
+		    	try {
+					Langue.languesDisponibles();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+	    		String fluxLang = scanner.nextLine();
+	    		if(type == "video") {
+	    			System.out.println("Veuillez taper votre resLargeurVid");
+	    			resLargeurVid =Integer.parseInt(scanner.nextLine());
+					System.out.println("Veuillez taper votre resHauteurVid");
+					resHauteurVid =Integer.parseInt(scanner.nextLine());
+	    		}
+	    		else if (type == "audio") {
+	    			System.out.println("Veuillez taper votre echantillonage");
+	    			echantillonage = Integer.parseInt(scanner.nextLine());
+	    		}
+				try {
+	    			Flux.addFlux(type,idFichier,fluxLang,codec,debit,resLargeurVid,resHauteurVid,echantillonage);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+				
+				
+			case "ajout_album":
+				System.out.println("Nom du album?");
+				String titre = scanner.nextLine();
+				System.out.println("Nom de l'Artist?");	
+				String nomArtist = scanner.nextLine();
+				System.out.println("Date de Sortie? (sous la forme AAAA-MM-JJ");
+				boolean dateLu = false;
+				SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+				Date dateSortie = null;
+				while (!dateLu){
+					String date = scanner.nextLine();
+					if(date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+						try{
+							dateSortie = f.parse(date);
+							dateLu = true;
+						} catch (ParseException e){
+						}
+					}
+					else{
+						System.out.println("Erreur de format ressaisissez la");
+					}
+				}
+
+				System.out.println("URL vers l'album?");
+				String URLAlbum = scanner.nextLine();
+				try {
+					Album.addAlbum(titre, nomArtist, dateSortie, URLAlbum);
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+				break;
+				
 			case "exit":
 	    		continuer = false;
 	    		break;
