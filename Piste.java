@@ -202,9 +202,9 @@ public class Piste {
 				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.IdAlbum = ? and m.NumPiste = ?");
 		statement1.setInt(1, IdAlbum);
 		statement1.setInt(2, numPiste);
-		ResultSet resultat = statement1.executeQuery();
+		ResultSet resultat1 = statement1.executeQuery();
 		while(resultat.next()) {
-			int idFichierSuppr = resultat.getString("idFichier"); 
+			int idFichierSuppr = resultat1.getString("idFichier"); 
 			PreparedStatement statementSupprFichier = BdClass.getConnection().prepareStatement(
 					"DELETE FROM Fichier WHERE idFichier = ?");
 			statementSupprFichier.setInt(1, idFichierSuppr);
@@ -216,9 +216,9 @@ public class Piste {
 				"SELECT * FROM ContributionPiste where IdAlbum = ? and NumPiste = ?");
 		statement2.setInt(1, IdAlbum);
 		statement2.setInt(2, numPiste);
-		ResultSet resultat = statement2.executeQuery();
+		ResultSet resultat2 = statement2.executeQuery();
 		while(resultat.next()) {
-			int numArtisteSuppr = resultat.getString("NumArtiste"); 
+			int numArtisteSuppr = resultat2.getString("NumArtiste"); 
 			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
 					"DELETE FROM ContributionPiste WHERE numArtiste = ? and IdAlbum = ? and NumPiste = ?");
 			statementSupprRole.setInt(1, numArtisteSuppr);
@@ -233,6 +233,10 @@ public class Piste {
 		statementSupprPiste.setInt(1, IdAlbum);
 		statementSupprPiste.setInt(2, numPiste);
 		statementSupprPiste.executeQuery();
+		
+		/** Nettoyage des Artistes et de Album*/
+		Artist.nettoyageArtiste();
+		Album.nettoyageAlbum();
 
 	}
 

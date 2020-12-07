@@ -155,7 +155,7 @@ public class Artist {
 	}
 	
 	/** Supression des artistes qui ne sont pas references par d'autre contenus **/
-	public static void nettoyageArtiste(void){
+	public static void nettoyageArtiste(){
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 				"SELECT NumArtiste FROM ARTIST where NumArtiste NOT IN (SELECT NumArtiste FROM ContributionPiste UNION SELECT NumArtiste FROM ContributionFilm)");
 		ResultSet result = s.executeQuery();

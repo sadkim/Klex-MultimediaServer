@@ -2,6 +2,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
+import java.util.List;
+
 import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
 
@@ -10,7 +13,15 @@ public class Film {
 	
 	private String titre;
 	private int anneeSortie;
+	private static List<Filtre> filtres = new ArrayList<Filtre>();
 	
+	public static void addFilter(Filtre filtre) {
+		Film.filtres.add(filtre);
+	}
+	
+	public static void deleteFilters() {
+		Film.filtres.clear();
+	}
 	
 	public String getTitre() {
 		return titre;
@@ -97,7 +108,7 @@ public class Film {
 			boolean continu = true;
 			boolean contrainteSatis = false;
 			while(continu || !contrainteSatis) {
-				System.out.println();
+				System.out.println(message);
 				String commande = Klex.scanner.nextLine();
 
 				if(commande.equals("ajouteFichier")) {
@@ -107,7 +118,7 @@ public class Film {
     				try {
     					Fichier.addFichier(taille, new Film(titre, anneeSortie));
     					contrainteSatis = true;
-    					message= "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier tappez ajouteFichier, tappez n'importe quoi pour quitter";
+    					message = "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier tappez ajouteFichier, tappez n'importe quoi pour quitter";
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -207,8 +218,58 @@ public class Film {
 	
 	
 	public static void searchFilm(String name) throws SQLException {
-		PreparedStatement statement = BdClass.getConnection().prepareStatement(
-				"SELECT * FROM film where titre like'*?*' and ageMin < ? order by titre");
+		String req = "SELECT Film.titre, Film.anneeSortie FROM Film, Fichier, Flux, Contribution, CategorisationFilm where Film.titre  = categorisationFilm.titre and Film.anneeSortie = categorisationFilm.anneeSortie and Film.titre =ContenuMultimedia.titre and Film.anneeSortie  = contenuMultimedia.anneeSortie and contenuMultimedia.idFichier= Fichier.idFichier and Flux.idFichier = Fichier.idFichier  and Film.titre like '*?*' and ageMin < ? and ";
+		req += "(";
+
+		for(Filtre monFiltre: filtres) {
+			if(monFiltre.getChamp().equals("langue")) {
+				req += " (Flux.";
+				req += monFiltre.getChamp();
+				req += " = ";
+				req += monFiltre.getValeur();
+				req += " and flux.type = audio)";
+				req += " OR ";
+			}
+
+		}
+		req += "1 = 0";
+		req += ")";
+		req+=" AND ";
+
+		req += "(";
+
+		for(Filtre monFiltre: filtres) {
+			if(monFiltre.getChamp().equals("langueSousTitre")) {
+				req += " (Flux.langue = ";
+				req += monFiltre.getValeur();
+				req += " and flux.type = text)";
+				req += " OR ";
+			}
+
+		}
+		req += "1 = 0";
+		req += ")";
+
+		req+=" AND ";
+		req += "(";
+
+		for(Filtre monFiltre: filtres) {
+			if(monFiltre.getChamp().equals("categorie")) {
+				req += " ";
+				req += monFiltre.getChamp();
+				req += " = ";
+				req += monFiltre.getValeur();
+				req += " OR ";
+			}
+
+		}
+		req += "1 = 0";
+		req += ")";
+
+		
+		
+		req += "order by titre";
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(req);
 		statement.setString(1, name);
 		statement.setInt(2, User.getAge());
 		ResultSet resultat =statement.executeQuery();
@@ -233,7 +294,7 @@ public class Film {
 		statement.executeQuery();
 	}
 	
-	public static void supprimerFilm(String titre, int anneeSortie) {
+	public static void supprimerFilm(String titre, int anneeSortie) throws SQLException {
 		
 		/** Suppression des fichiers associees au film */
 		PreparedStatement statement1 = BdClass.getConnection().prepareStatement(
@@ -242,7 +303,7 @@ public class Film {
 		statement1.setInt(2, anneeSortie);
 		ResultSet resultat = statement1.executeQuery();
 		while(resultat.next()) {
-			int idFichierSuppr = resultat.getString("idFichier"); 
+			int idFichierSuppr = resultat.getInt("idFichier"); // avoir si l'attribut de la table de jointure est bien idFichier
 			PreparedStatement statementSupprFichier = BdClass.getConnection().prepareStatement(
 					"DELETE FROM Fichier WHERE idFichier = ?");
 			statementSupprFichier.setInt(1, idFichierSuppr);
@@ -254,9 +315,9 @@ public class Film {
 				"SELECT * FROM ContributionFilm where Titre like '*?*' and AnneeSortie = ?");
 		statement2.setString(1, titre);
 		statement2.setInt(2, anneeSortie);
-		ResultSet resultat = statement2.executeQuery();
-		while(resultat.next()) {
-			int numArtisteSuppr = resultat.getString("NumArtiste"); 
+		ResultSet resultat1 = statement2.executeQuery();
+		while(resultat1.next()) {
+			int numArtisteSuppr = resultat1.getInt("numArtiste"); 
 			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
 					"DELETE FROM ContributionFilm WHERE numArtiste = ? and Titre like '*?*' and AnneeSortie = ?");
 			statementSupprRole.setInt(1, numArtisteSuppr);
@@ -271,7 +332,10 @@ public class Film {
 		statementSupprFilm.setString(1, titre);
 		statementSupprFilm.setInt(2, anneeSortie);
 		statementSupprFilm.executeQuery();
+		
+		/** Nettoyage des Artistes et de Album*/
 		Artist.nettoyageArtiste();
+		Album.nettoyageAlbum();
 	}
 	
 }

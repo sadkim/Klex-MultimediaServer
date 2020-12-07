@@ -226,7 +226,7 @@ public class Album {
 	}
 	
 	/** Supression des albums qui ne sont pas references par d'autre contenus **/
-	public static void nettoyageAlbum(void){
+	public static void nettoyageAlbum(){
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 				"SELECT IdAlbum FROM Album where IdAlbum NOT IN (SELECT IdAlbum FROM ContributionPiste)");
 		ResultSet result = s.executeQuery();
