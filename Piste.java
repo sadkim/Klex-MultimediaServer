@@ -119,7 +119,7 @@ public class Piste {
 				System.out.println("à chaque piste doit être associée au moins un fichier");
 				boolean ajoutFichierFini = false;
 				boolean contSatis = false;
-				while (!ajoutFichierFini || contrainteSatis){
+				while (!ajoutFichierFini || !contrainteSatis){
 					System.out.println("tapez ajouteFichier pour ajouter un fichier");
 					System.out.println("tapez annuler pour annuler la création de la piste");
 					System.out.println("taper autre chose pour terminer");

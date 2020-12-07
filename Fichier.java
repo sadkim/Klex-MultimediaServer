@@ -98,16 +98,16 @@ public class Fichier {
 		
 		public static void addFichier(float tailleFichier,Film film) throws SQLException {
 			int idFichier =ajouterFichierEntree(tailleFichier);
-			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier ajouté");
+			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier_ajoute");
 			contenuMultimedia(idFichier, film.getTitre(), film.getAnneeSortie(), 0, 0);
-			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et fichier sont reliés");
+			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film_et_fichier_sont_relies");
 		}
 	
 		public static void addFichier(float tailleFichier,Piste piste) throws SQLException {
 			int idFichier =ajouterFichierEntree(tailleFichier);
-			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier ajouté");
+			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier_ajoute");
 			contenuMultimedia(idFichier,null ,0, piste.getIdAlbum(), piste.getnumPiste());
-			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et fichier sont reliés");
+			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film_et_fichier_sont_relies");
 		}
 	
 		/*
@@ -116,9 +116,11 @@ public class Fichier {
 		private static int ajouterFichierEntree(float tailleFichier) throws SQLException {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("Select idFichierSeq.nextval From dual");
 			ResultSet resultat = statement.executeQuery();
+			//loin d'y arriver juste pour ne pas avoir des SQLException
+			if (!resultat.next()){ throw new SQLException("we reached the limits");} 
 			int idFichier= resultat.getInt("NEXTVAL");
 
-			statement = BdClass.getConnection().prepareStatement("INSERT INTO Fichier (idFichier, Date, tailleFichier, Email) values(?,sysdate,?,?)");
+			statement = BdClass.getConnection().prepareStatement("INSERT INTO Fichier (idFichier, DateFichier, tailleFichier, Email) values(?,sysdate,?,?)");
 			statement.setInt(1, idFichier);
 			statement.setFloat(2, tailleFichier);
 			statement.setString(3, User.getEmail());
@@ -130,13 +132,18 @@ public class Fichier {
 		
 		
 		private static void contenuMultimedia(int idFichier, String Titre, int anneeSortie,int IdAlbum, int numPiste ) throws SQLException {// ne pas utiliser avant de verifier que le film ou l'album existent bien
-			PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO ContenuMultimedia (idFichier, Titre, AnneeSortie,IdAlbum,NumPiste ) values(idFichierSeq.nextval,sysdate,?,?)");
+			PreparedStatement statement = BdClass.getConnection().prepareStatement(
+					"INSERT INTO ContenuMultimedia (idFichier, Titre, AnneeSortie,IdAlbum ,NumPiste ) values(?,?,?,?,?)");
 			statement.setInt(1, idFichier);
 			if(anneeSortie !=0) {
-			statement.setString(2, Titre);
-			statement.setInt(3, anneeSortie);
+				statement.setString(2, Titre);
+				statement.setInt(3, anneeSortie);
+				statement.setNull(4, java.sql.Types.INTEGER);
+				statement.setNull(5, java.sql.Types.INTEGER);
 			}
-			if(anneeSortie !=0) {
+			else if (anneeSortie == 0){
+				statement.setNull(2, java.sql.Types.INTEGER);
+				statement.setNull(3, java.sql.Types.INTEGER);
 				statement.setInt(4, IdAlbum);
 				statement.setInt(5, numPiste);
 			}
