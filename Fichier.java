@@ -59,7 +59,7 @@ public class Fichier {
 							Film.readInfoFilm(idFichier);
 							repeat = false;
 						} catch (FilmAlreadyExistException e) {
-							System.out.println("le tfilm que vous essayez de créer existe déja ");
+							System.out.println("le film que vous essayez de créer existe déja ");
 ;
 						}
 						break;

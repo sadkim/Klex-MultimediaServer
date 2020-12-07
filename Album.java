@@ -168,7 +168,7 @@ public class Album {
 	 * Renvoyer -1 sinon**/
 	public static int getNbPiste(int IdAlbum) throws SQLException {
 		if (AlbumExiste(IdAlbum)) {
-			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ALBUM where IdAlbum = ?");
+			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Pistes where IdAlbum = ?");
 			statement.setInt(1, IdAlbum);
 			ResultSet resultat = statement.executeQuery();
 			int nbPiste = 0;
@@ -209,5 +209,19 @@ public class Album {
 		}
 		return null;
 		
+	}
+	
+	public static Integer trouveIdentifiant(String titre, int numArtiste) throws SQLException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+			"SELECT idALbum from Album WHERE TitreAlbum = ? and  NumArtiste = ?");
+
+		statement.setString(1, titre);
+		statement.setInt(2, numArtiste);
+		statement.executeQuery();
+		ResultSet resultat = statement.executeQuery();
+		if (resultat.next()){
+			return resultat.getInt("IdAlbum");
+		}
+		return null;
 	}
 }

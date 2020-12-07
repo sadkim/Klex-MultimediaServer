@@ -32,6 +32,30 @@ public class Piste {
 		}
 	}
 	
+	/** Cette méthode permet de lire les informations d'une piste à partir de l'interface Klex **/
+	public static void readInfoPiste(){
+		/* Lecture des informations de  l'album */
+		try{
+			System.out.println("le nom artiste ?");
+			String nomArtiste = Klex.scanner.nextLine();
+			Integer numArtiste = Artist.getNumArtiste(nomArtiste);
+			if (numArtiste == null){
+				System.out.println("Cet artiste n'existe pas");
+				return;
+			}
+			System.out.println("le titre de l'album ?");
+			String titreAlbum = Klex.scanner.nextLine();
+			Integer idAlbum = Album.trouveIdentifiant(titreAlbum , numArtiste);
+			if (idAlbum == null){
+				System.out.println("Cet album n'existe pas");
+				return;
+			}
+			readInfoPiste(idAlbum );
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/** Cette méthode permet de lire les informations d'une piste aprés la création de l'album **/
 	public static void readInfoPiste(int idAlbum) {

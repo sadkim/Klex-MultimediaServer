@@ -107,6 +107,7 @@ public class Klex {
 				break;
 
 			case "ajout_piste":
+				Piste.readInfoPiste();
 				break;
 
 			case "ajout_fluxVideo":
