@@ -17,7 +17,7 @@ public class Confirmation {
 					BdClass.getConnection().rollback();
 					return false;
 				default:
-					System.out.println("mauvais réponse");	
+					System.out.println("Mauvaise réponse");	
 			}
 		}	
 	}
@@ -33,7 +33,7 @@ public class Confirmation {
 					BdClass.getConnection().rollback(svpt);
 					return false;
 				default:
-					System.out.println("mauvais réponse");	
+					System.out.println("Mauvaise réponse");	
 			}
 		}	
 	}

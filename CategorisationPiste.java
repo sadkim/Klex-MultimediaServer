@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class CategorisationPiste {
 
-	/** Permet de savoir si une categorie existe deja dans la base de donnee **/
+	/** Permet de savoir si la categorie et la piste passee en parametre existe deja dans la base de donnee **/
 	public static boolean ElementsExiste(int idAlbum, int numPiste, String categorie) throws SQLException {
 		return Piste.PisteExiste(idAlbum, numPiste) && CategorieMusique.ExisteCategMusique(categorie);
 	}

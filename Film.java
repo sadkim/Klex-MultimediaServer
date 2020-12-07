@@ -233,5 +233,25 @@ public class Film {
 		statement.executeQuery();
 	}
 	
+	public static void supprimerFilm(String titre, int anneeSortie) {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.Titre like '*?*' and m.AnneeSortie = ?");
+		statement.setString(1, titre);
+		statement.setInt(2, anneeSortie);
+		ResultSet resultat = statement.executeQuery();
+		while(resultat.next()) {
+			int idFichierSuppr = resultat.getString("idFichier"); // avoir si l'attribut de la table de jointure est bien idFichier
+			PreparedStatement statementSupprFichier = BdClass.getConnection().prepareStatement(
+					"DELETE FROM Fichier WHERE idFichier = ?");
+			statementSupprFichier.setInt(1, idFichierSuppr);
+			statementSupprFichier.executeQuery();
+		}
+		PreparedStatement statementSupprFilm = BdClass.getConnection().prepareStatement(
+				"DELETE FROM Film WHERE titre like ='*?*' and anneeSortie = ?");
+		statementSupprFilm.setString(1, titre);
+		statementSupprFilm.setInt(2, anneeSortie);
+		statementSupprFilm.executeQuery();
+
+	}
 	
 }

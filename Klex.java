@@ -170,13 +170,13 @@ public class Klex {
 				}
 	    		String fluxLang = scanner.nextLine();
 	    		if(type == "video") {
-	    			System.out.println("Veuillez taper votre resLargeurVid");
+	    			System.out.println("Veuillez tapper votre resLargeurVid");
 	    			resLargeurVid =Integer.parseInt(scanner.nextLine());
 					System.out.println("Veuillez taper votre resHauteurVid");
 					resHauteurVid =Integer.parseInt(scanner.nextLine());
 	    		}
 	    		else if (type == "audio") {
-	    			System.out.println("Veuillez taper votre echantillonage");
+	    			System.out.println("Veuillez tapper votre echantillonage");
 	    			echantillonage = Integer.parseInt(scanner.nextLine());
 	    		}
 				try {
