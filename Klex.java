@@ -2,6 +2,7 @@
 import java.sql.SQLException;
 import java.util.Scanner;
 import except.EmailAlreadyExistsException;
+import except.FilmAlreadyExistException;
 import except.NoSuchUserException;
 
 
@@ -43,7 +44,7 @@ public class Klex {
 		    	System.out.println("votre mot de passe svp");
 	    		String password =scanner.nextLine();
 	    		try {
-					User user1 = new User(email, password);
+					new User(email, password);
 				} catch (NoSuchUserException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {
@@ -73,7 +74,7 @@ public class Klex {
 
 
 	    		try {
-					User user1 = new User(email1, nom, prenom, age, password1, langue1);
+					new User(email1, nom, prenom, age, password1, langue1);
 				} catch (EmailAlreadyExistsException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {
@@ -97,7 +98,12 @@ public class Klex {
 				break;
 			
 			case "ajout_film":
-				Film.readInfoFilm();
+				try {
+					Film.readInfoFilm(0);
+				} catch (FilmAlreadyExistException e2) {
+					// ce cas est impossible
+					e2.printStackTrace();
+				}
 				break;
 
 			case "ajout_piste":

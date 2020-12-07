@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.Scanner;
 
 public class Artist {
 			
