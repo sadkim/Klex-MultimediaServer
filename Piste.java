@@ -42,9 +42,9 @@ public class Piste {
 					switch (commande) {
 						case "Categoriser":
 							Savepoint svptCategorisation = BdClass.getConnection().setSavepoint("svpCategorisation");
-							boolean ajoute = readInfoCategoPiste(IdAlbum , nbPiste + 1,  true);
+							boolean ajoute = CategorisationPiste.readInfoCategoPiste(IdAlbum , nbPiste + 1,  true);
 						if (ajoute){
-							contrainteSatis = contraintSatis || confirmerAvecCascade(
+							contrainteSatis = contrainteSatis || confirmerAvecCascade(
 								"Voulez vous confirmer la catégorisation [Y/N]", svpCategorisation);
 						}
 						break;
@@ -52,9 +52,9 @@ public class Piste {
 						case "nouvelleCategorie":
 							Savepoint ajoutCategorie = BdClass.getConnection().setSavepoint("svpCategorie");
 							lireCategMusique(true);
-							boolean ajoute = confirmerAvecCascade( "Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]",
+							boolean ajoute1 = confirmerAvecCascade( "Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]",
 								svpCategorie);
-							if (ajoute){ System.out.println("maintenant, il faut ajouter l'album à cette catégorie"); };
+							if (ajoute1){ System.out.println("maintenant, il faut ajouter l'album à cette catégorie"); };
 							break;
 
 						case "fini" :
