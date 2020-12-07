@@ -2,6 +2,7 @@
 import java.sql.SQLException;
 import java.util.Scanner;
 import except.EmailAlreadyExistsException;
+import except.FilmAlreadyExistException;
 import except.NoSuchUserException;
 
 
@@ -97,7 +98,12 @@ public class Klex {
 				break;
 			
 			case "ajout_film":
-				Film.readInfoFilm();
+				try {
+					Film.readInfoFilm(0);
+				} catch (FilmAlreadyExistException e2) {
+					// ce cas est impossible
+					e2.printStackTrace();
+				}
 				break;
 
 			case "ajout_piste":
