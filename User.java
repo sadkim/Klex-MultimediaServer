@@ -103,5 +103,12 @@ public class User {
 			return languePrefere;
 		}
 		
-		
+		public static void deconnection() {
+			User.email= null;
+			User.age =0;
+			User.languePrefere=null;
+			User.nom=null;
+			User.prenom=null;
+			
+		}
 }
