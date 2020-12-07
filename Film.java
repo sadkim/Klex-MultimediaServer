@@ -92,19 +92,22 @@ public class Film {
 		else {
 			filmToDb(titre, anneeSortie, Resume, ageMin, urlAffiche);
 			
-			System.out.println("à chaque film doit être associée au moins un fichier ajouter un fichier" +
-					"en tappant ajouteFichier ou bien annulez la création en tappant autre chose");
 			
-			String commande = Klex.scanner.nextLine();
+			String message ="à chaque film doit être associée au moins un fichier ajouter un fichier en tappant ajouteFichier ou bien annulez la création en tappant autre chose";
 			boolean continu = true;
-			while(continu) {
+			boolean contrainteSatis = false;
+			while(continu || !contrainteSatis) {
+				System.out.println();
+				String commande = Klex.scanner.nextLine();
+
 				if(commande.equals("ajouteFichier")) {
     				System.out.println("quelle est la taille de votre fichier");
     				float taille = Float.parseFloat(Klex.scanner.nextLine());
 
     				try {
     					Fichier.addFichier(taille, new Film(titre, anneeSortie));
-    					continu= false;
+    					contrainteSatis = true;
+    					message= "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier tappez ajouteFichier, tappez n'importe quoi pour quitter";
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -112,9 +115,14 @@ public class Film {
 						// TODO Auto-generated catch block
     					System.out.println("ce film n'existe pas");
 					}
-    			}else {
-    				BdClass.getConnection().rollback();
-    				System.out.println("ajout film annulé");
+    			}
+    			else{
+    				if(!contrainteSatis) {
+        				BdClass.getConnection().rollback();
+    					System.out.println("ajout film annulé");
+    				}else {
+    					System.out.println("vos inssertions ont bien été sauvegardés");
+    				}
 					return;
 
     			}
