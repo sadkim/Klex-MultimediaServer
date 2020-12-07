@@ -59,4 +59,5 @@ public class Flux {
 				else BdClass.getConnection().rollback();
 		
 			}
+		
 }

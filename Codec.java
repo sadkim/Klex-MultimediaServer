@@ -4,6 +4,15 @@ import java.sql.SQLException;
 
 public class Codec {
 	
+	public static void codecDisponibles() throws SQLException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Codec");
+		ResultSet resultat =statement.executeQuery();
+		while(resultat.next()) {
+			System.out.println(resultat.getString("codec"));
+		}
+
+	}
+	
 	/** Verifier l'existance d'un codec */
 	public static boolean codecExist(String c) throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement("Select * From Codec where codec = ?");

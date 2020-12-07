@@ -3,6 +3,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 import except.EmailAlreadyExistsException;
 import except.FilmAlreadyExistException;
+import except.FilmDoesNotExistException;
 import except.NoSuchUserException;
 
 
@@ -16,26 +17,27 @@ public class Klex {
     	String passwd = "159357";
 		BdClass.connect(url, user,passwd);	
 	    //Scanner scanner = new Scanner(System.in);
-	    String commande;
-	    boolean continuer= true;
+	    
     	System.out.println("bienvenue sur Klex");
 
-	    while(continuer) {
+	    
+	    scanner.close();
+	    try {
+			BdClass.closeConnection();
+		} catch (SQLException e) {
+	    	System.out.println("couldn't close connection");
+			e.printStackTrace();
+		}
+
+
+	}
+	private static void boucleNonConnecte() {
+		String commande;
+	    boolean continuer= true;
+		while(continuer) {
 	    	System.out.println("tappez connection si vous avez déjà un compte");
 	    	System.out.println("tappez inscription si vous êtes ici pour la première fois");
-	    	System.out.println("tappez aide si vous avez besoin d'aide fonction pas encore disponible");
 	    	System.out.println("tappez exit pour quitter l'application");
-			
-			/* Les ajouts majeurs */
-			System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
-			System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
-			System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
-			System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
-			System.out.println("tapez ajout_film si vous voulez ajouter un nouveau film");
-			
-			/* Ajout de modification : a rassembler dans une commande apres */
-			System.out.println("tapez ajout_flux si vous voulez ajouter un nouveau logiciel");
-
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "connection":
@@ -45,6 +47,7 @@ public class Klex {
 	    		String password =scanner.nextLine();
 	    		try {
 					new User(email, password);
+					boucleConnecte();
 				} catch (NoSuchUserException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {
@@ -75,6 +78,7 @@ public class Klex {
 
 	    		try {
 					new User(email1, nom, prenom, age, password1, langue1);
+					boucleConnecte();
 				} catch (EmailAlreadyExistsException e) {
 			    	System.out.println(e.getMessage());
 				} catch (SQLException e) {
@@ -85,8 +89,34 @@ public class Klex {
 				}
 	    		break;
 
-			case "ajout_artiste":
-				Artist.readArtistInfo();
+			
+				
+							
+			case "exit":
+	    		continuer = false;
+	    		break;
+	    	default:
+		    	System.out.println("klex est un logiciel de gestion de fichiers");
+
+	    		break;
+	    	}
+	    }
+		
+	}
+	private static void boucleConnecte() {
+		String commande;
+	    boolean continuer= true;
+		while(continuer) {
+	    
+	    	System.out.println("tappez aide pour voir les commandes disponibles");
+	    	
+			
+			
+
+	    	commande = scanner.nextLine();
+	    	switch(commande) {
+	    	case "aide":
+	    		help();
 				break;
 	    
 			case "ajout_logiciel":
@@ -105,23 +135,21 @@ public class Klex {
 					e2.printStackTrace();
 				}
 				break;
-
-			case "ajout_piste":
-				Piste.readInfoPiste();
+			case "ajout_fichier":
+		    	System.out.println("entrez la taille du fichier");
+		    	
+				try {
+					Fichier.addFichier(Integer.parseInt(scanner.nextLine()));
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (FilmDoesNotExistException e) {
+					
+					e.printStackTrace();
+// hiiiiiiiiiiiiiiiiiiiiiiiiiiiii TODO ce cas normalement doit re traité avant d'arriver ici
+				}
 				break;
-
-			case "ajout_fluxVideo":
-				System.out.println("Veuillez taper votre idFichier");
-				//Logiciel.readLogicielInfo();
-				break;	
-				
-				//------------------------------------------------------------------------//
-				//																		  //
-				//				Si l'utilisateur veut ajouter un Flux : 				  //
-				//																		  //
-				//																		  //
-				//------------------------------------------------------------------------//
-				
 			case "ajout_flux":
 				
 				System.out.println("Veuillez taper le type de votre flux parmi [video | audio | text] : \n");
@@ -157,8 +185,11 @@ public class Klex {
 					e.printStackTrace();
 				}
 				break;
-				
-				
+
+
+			case "ajout_piste":
+				Piste.readInfoPiste();
+				break;				
 							
 			case "exit":
 	    		continuer = false;
@@ -169,15 +200,18 @@ public class Klex {
 	    		break;
 	    	}
 	    }
-	    scanner.close();
-	    try {
-			BdClass.closeConnection();
-		} catch (SQLException e) {
-	    	System.out.println("couldn't close connection");
-			e.printStackTrace();
-		}
-
-
 	}
-
+	
+	private static void help() {
+		/* Les ajouts majeurs */
+		System.out.println("tapez ajout_artiste si vous voulez ajouter un nouveau artiste");
+		System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
+		System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
+		System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
+		System.out.println("tapez ajout_film si vous voulez ajouter un nouveau film");
+		
+		/* Ajout de modification : a rassembler dans une commande apres */
+		System.out.println("tapez ajout_flux si vous voulez ajouter un nouveau logiciel");
+	}
 }
+

@@ -2,6 +2,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.Scanner;
+
 import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
 
@@ -93,7 +95,83 @@ public class Fichier {
 				//TODO
 				break;
 			}
-				//TODO
+			
+			
+			// insertion du flux
+			inssererFlux(idFichier);
+			BdClass.getConnection().commit();
+			System.out.println("votre fichier, le Film ou la piste si vous avez choisis d'en ajouter et le flux associé ont bien été crée.\n merci pour votre contribution");
+			
+
+		}
+
+		private static void inssererFlux(int idFichier) throws SQLException {
+			String type ="haha";
+			String langue ="hey";
+			String codec = null;
+			int debit=0;
+			int resHauteurVid=0;
+			int resLargeurVid=0;
+			int echantillonage =0;
+			while(!type.equals("video") && !type.equals("audio") && !type.equals("text")) {
+				System.out.println("inserez le type de fllux svp video | audio | text");
+				type = Klex.scanner.nextLine();
+			}
+			boolean repeat = true;
+			while(repeat) {
+				System.out.println("choisissez la langue du flux");
+				Langue.languesDisponibles();
+				langue = Klex.scanner.nextLine();
+				if(!Langue.langueExiste(langue)) {
+					boolean continu = true;
+					while(continu) {
+						System.out.println("Langue inexistante voulais vous ajouter cette langue oui/non" );
+		    			String rep =Klex.scanner.nextLine();
+		    			if(rep.equals("oui")) {
+		    				Langue.ajouterLangue(langue);
+		    				continu=false;
+		    				repeat = false;
+		    			} else if(rep=="non") {
+		    				continu = false;
+		    			}
+
+					}
+				}
+			}
+			repeat = true;
+			while(repeat) {
+				System.out.println("choisissez la langue le codec");
+				Codec.codecDisponibles();
+				codec = Klex.scanner.nextLine();
+				if(!Codec.codecExist(codec)) {
+					boolean continu = true;
+					while(continu) {
+						System.out.println("codec inexistantant voulais vous ajouter cette langue oui/non" );
+		    			String rep =Klex.scanner.nextLine();
+		    			if(rep.equals("oui")) {
+		    				Codec.addCodec(codec, true);
+		    				continu=false;
+		    				repeat = false;
+		    			} else if(rep=="non") {
+		    				continu = false;
+		    			}
+
+					}
+				}
+			}
+			System.out.println("entrez debit" );
+			debit = Integer.getInteger(Klex.scanner.nextLine());
+			if(type.equals("video")){
+				System.out.println("entrez resHaueurVid" );
+				resHauteurVid = Integer.getInteger(Klex.scanner.nextLine());
+				System.out.println("entrez resLargeurVid" );
+			}
+			if(type.equals("audio")){
+				resLargeurVid = Integer.getInteger(Klex.scanner.nextLine());
+				System.out.println("entrez echantillonage" );
+				echantillonage = Integer.getInteger(Klex.scanner.nextLine());
+			}
+			Flux.addFlux(type, idFichier, langue, codec, debit, resLargeurVid, resHauteurVid, echantillonage);
 		}
 		
 		public static void addFichier(float tailleFichier,Film film) throws SQLException {
@@ -101,6 +179,11 @@ public class Fichier {
 			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier_ajoute");
 			contenuMultimedia(idFichier, film.getTitre(), film.getAnneeSortie(), 0, 0);
 			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film_et_fichier_sont_relies");
+			inssererFlux(idFichier);
+			BdClass.getConnection().commit();
+			System.out.println("Film,et fichiers et flux associés ont été crée ");
+			
+
 		}
 	
 		public static void addFichier(float tailleFichier,Piste piste) throws SQLException {

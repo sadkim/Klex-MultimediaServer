@@ -12,6 +12,17 @@ public class Langue {
 		}
 
 	}
+	
+	public static boolean langueExiste(String langue) throws SQLException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM langue where langue = ?");
+		statement.setString(1, langue);
+		ResultSet resultat = statement.executeQuery();
+		if(resultat.next()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static void ajouterLangue(String langue) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO Langue (langue) values(?)");
 		statement.setString(1, langue);

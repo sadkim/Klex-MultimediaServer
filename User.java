@@ -35,10 +35,8 @@ public class User {
 			if(resultat.next()) {
 				throw new EmailAlreadyExistsException("L'email:" + email +" est déja utilisé vous pouvait vous connecter directement");
 			}
-			statement = BdClass.getConnection().prepareStatement("SELECT * FROM langue where langue = ?");
-			statement.setString(1, languePrefere);
-			statement.executeQuery();
-			if(!resultat.next()) {
+			
+			if(!Langue.langueExiste(languePrefere)) {
 			    Scanner scanner = new Scanner(System.in);
 			    boolean continu = true;
 				while(continu) {
