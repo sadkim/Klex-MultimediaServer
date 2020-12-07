@@ -42,7 +42,7 @@ public class Piste {
 					switch (commande) {
 						case "Categoriser":
 							Savepoint svptCategorisation = BdClass.getConnection().setSavepoint("svpCategorisation");
-							boolean ajoute = readInfoCategoPiste(idAlbum , nbPiste + 1,  true);
+							boolean ajoute = readInfoCategoPiste(IdAlbum , nbPiste + 1,  true);
 						if (ajoute){
 							contrainteSatis = contraintSatis || confirmerAvecCascade(
 								"Voulez vous confirmer la catégorisation [Y/N]", svpCategorisation);

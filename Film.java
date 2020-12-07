@@ -138,19 +138,31 @@ public class Film {
 					"en tappant ajouteFichier ou bien annulez la création en tappant autre chose");
 			
 			String commande = Klex.scanner.nextLine();
-    		if(commande.equals("ajouteFichier")) {
-    			System.out.println("quelle est la taille de votre fichier");
-    			float taille = Float.parseFloat(scanner.nextLine());
+			boolean continu = true;
+			while(continu) {
+				if(commande.equals("ajouteFichier")) {
+    				System.out.println("quelle est la taille de votre fichier");
+    				float taille = Float.parseFloat(Klex.scanner.nextLine());
 
-    		fichier.addFichier(taille, new Film(titre, anneeSortie), scanner);
-    		}else {
-    			BdClass.getConnection().rollback();
-    			System.out.println("ajout film annulé");
-				return;
+    				try {
+    					Fichier.addFichier(taille, new Film(titre, anneeSortie));
+    					continu= false;
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (FilmDoesNotExistException e) {
+						// TODO Auto-generated catch block
+    					System.out.println("ce film n'existe pas");
+					}
+    			}else {
+    				BdClass.getConnection().rollback();
+    				System.out.println("ajout film annulé");
+					return;
 
-    		}
+    			}
+			}
 
-		//TODO ne modifie pas cette ligne pourquoi tu l'a modifier c'est moi qui me 
+		// ne modifie pas cette ligne pourquoi tu l'a modifier c'est moi qui me 
 		//charge de ca et non le comit ne se fait pas ici il se fait aprés quand on ajoute le fichier associé
 		}
 	}
@@ -169,7 +181,7 @@ public class Film {
 	}
 
 	
-	public static void collectFilmData() {
+	public static void reaFilmInfo() {
 		//TODO
 		return;
 	}
