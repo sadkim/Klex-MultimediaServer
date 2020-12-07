@@ -153,4 +153,18 @@ public class Artist {
 		ResultSet result = s.executeQuery();
 		return null;
 	}
+	
+	/** Supression des artistes qui ne sont pas references par d'autre contenus **/
+	public static void nettoyageArtiste(void){
+		PreparedStatement s = BdClass.getConnection().prepareStatement(
+				"SELECT NumArtiste FROM ARTIST where NumArtiste NOT IN (SELECT NumArtiste FROM ContributionPiste UNION SELECT NumArtiste FROM ContributionFilm)");
+		ResultSet result = s.executeQuery();
+		while(result.next()){
+			int numArtisteSuppr = result.getString("NumArtiste"); 
+			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
+					"DELETE FROM ARTIST WHERE numArtiste = ?");
+			statementSupprRole.setInt(1, numArtisteSuppr);
+			statementSupprRole.executeQuery();
+		}
+	}
 }

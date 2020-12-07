@@ -191,6 +191,49 @@ public class Piste {
 			return true;
 		}
 		
-		return false; }
+		return false; 
+	}
+	
+	
+	public static void supprimerPiste(int IdAlbum, int numPiste) {
+		
+		/** Suppression des fichiers associees a la piste */
+		PreparedStatement statement1 = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.IdAlbum = ? and m.NumPiste = ?");
+		statement1.setInt(1, IdAlbum);
+		statement1.setInt(2, numPiste);
+		ResultSet resultat = statement1.executeQuery();
+		while(resultat.next()) {
+			int idFichierSuppr = resultat.getString("idFichier"); 
+			PreparedStatement statementSupprFichier = BdClass.getConnection().prepareStatement(
+					"DELETE FROM Fichier WHERE idFichier = ?");
+			statementSupprFichier.setInt(1, idFichierSuppr);
+			statementSupprFichier.executeQuery();
+		}
+		
+		/** Suppression des artistes associees a la piste */
+		PreparedStatement statement2 = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM ContributionPiste where IdAlbum = ? and NumPiste = ?");
+		statement2.setInt(1, IdAlbum);
+		statement2.setInt(2, numPiste);
+		ResultSet resultat = statement2.executeQuery();
+		while(resultat.next()) {
+			int numArtisteSuppr = resultat.getString("NumArtiste"); 
+			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
+					"DELETE FROM ContributionPiste WHERE numArtiste = ? and IdAlbum = ? and NumPiste = ?");
+			statementSupprRole.setInt(1, numArtisteSuppr);
+			statementSupprRole.setInt(2, IdAlbum);
+			statementSupprRole.setInt(3, numPiste);
+			statementSupprRole.executeQuery();
+		}
+		
+		/** Suppression de la piste */
+		PreparedStatement statementSupprPiste = BdClass.getConnection().prepareStatement(
+				"DELETE FROM Pistes WHERE IdAlbum = ? and NumPiste = ?");
+		statementSupprPiste.setInt(1, IdAlbum);
+		statementSupprPiste.setInt(2, numPiste);
+		statementSupprPiste.executeQuery();
+
+	}
 
 }

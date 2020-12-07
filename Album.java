@@ -224,4 +224,19 @@ public class Album {
 		}
 		return null;
 	}
+	
+	/** Supression des albums qui ne sont pas references par d'autre contenus **/
+	public static void nettoyageAlbum(void){
+		PreparedStatement s = BdClass.getConnection().prepareStatement(
+				"SELECT IdAlbum FROM Album where IdAlbum NOT IN (SELECT IdAlbum FROM ContributionPiste)");
+		ResultSet result = s.executeQuery();
+		while(result.next()){
+			int idAlbumSuppr = result.getString("IdAlbum"); 
+			PreparedStatement statementSuppr = BdClass.getConnection().prepareStatement(
+					"DELETE FROM Album WHERE IdAlbum = ?");
+			statementSuppr.setInt(1, idAlbumSuppr);
+			statementSuppr.executeQuery();
+		}
+	}
 }
+

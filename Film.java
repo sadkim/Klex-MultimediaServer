@@ -251,12 +251,12 @@ public class Film {
 		
 		/** Suppression des roles associees au film */
 		PreparedStatement statement2 = BdClass.getConnection().prepareStatement(
-				"SELECT * FROM ContributionFilm c where c.Titre like '*?*' and c.AnneeSortie = ?");
+				"SELECT * FROM ContributionFilm where Titre like '*?*' and AnneeSortie = ?");
 		statement2.setString(1, titre);
 		statement2.setInt(2, anneeSortie);
 		ResultSet resultat = statement2.executeQuery();
 		while(resultat.next()) {
-			int numArtisteSuppr = resultat.getString("numArtiste"); 
+			int numArtisteSuppr = resultat.getString("NumArtiste"); 
 			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
 					"DELETE FROM ContributionFilm WHERE numArtiste = ? and Titre like '*?*' and AnneeSortie = ?");
 			statementSupprRole.setInt(1, numArtisteSuppr);
@@ -271,7 +271,7 @@ public class Film {
 		statementSupprFilm.setString(1, titre);
 		statementSupprFilm.setInt(2, anneeSortie);
 		statementSupprFilm.executeQuery();
-
+		Artist.nettoyageArtiste();
 	}
 	
 }
