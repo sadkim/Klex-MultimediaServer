@@ -103,7 +103,7 @@ public class Klex {
 	    }
 		
 	}
-	private static void boucleConnecte() {
+	private static void boucleConnecte() throws SQLException {
 		String commande;
 	    boolean continuer= true;
 		while(continuer) {
@@ -190,7 +190,42 @@ public class Klex {
 			case "ajout_piste":
 				Piste.readInfoPiste();
 				break;				
-							
+			case "ajout_filtre":
+				System.out.println("choisissez le type de filtre langue |langueSousTitre | categorie");
+				String categ = scanner.nextLine();
+				String valeur = "";
+				if(categ.equals("langue") || categ.equals("langueSousTitre")) {
+					boolean repeat = true;
+					while(repeat) {
+						System.out.println("choisissez la langue");
+						Langue.languesDisponibles();
+						valeur = scanner.nextLine();
+						if(Langue.langueExiste(valeur)) {
+							repeat =false;
+						}
+					}
+				}else if(categ.equals("categorie")) {
+					boolean repeat = true;
+					while(repeat) {
+						System.out.println("choisissez la categorie");
+						CategorieFilm.CategoriesFilmDispo();
+						valeur = scanner.nextLine();
+						if(CategorieFilm.ExisteCategFilm(valeur)) {
+							repeat =false;
+						}
+					}
+					
+				}else{
+					System.out.println("filtreEronnée");	
+				}
+				Film.addFilter(new Filtre(categ, valeur));
+
+
+
+				break;
+
+			case "vider_filtres":	
+				Film.deleteFilters();
 			case "exit":
 	    		continuer = false;
 	    		break;
