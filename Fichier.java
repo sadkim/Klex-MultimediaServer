@@ -8,6 +8,7 @@ import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
 
 public class Fichier {
+
 	
 		public static void addFichier(float tailleFichier) throws SQLException, FilmDoesNotExistException {
 			// ajout du fichier à la base de donnée et savepoint
@@ -28,7 +29,7 @@ public class Fichier {
 				
 				while(repeat) {
 					switch(choix) {
-					
+						
 					
 					//lier à un fim existant
 					case "existant":
@@ -232,4 +233,5 @@ public class Fichier {
 			}
 			statement.executeQuery();
 		}
+		
 }

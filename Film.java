@@ -338,4 +338,38 @@ public class Film {
 		Album.nettoyageAlbum();
 	}
 	
+	
+	/**	Afficher langues disponibles de CE FILM (les flux audios associés)
+	 * @throws SQLException **/
+	public void getLanguesDisponibles() throws SQLException {
+		String langues = "";
+		List<Integer> fichiersFilm = getFichier();
+		for (int idFichier : fichiersFilm) {
+			PreparedStatement statement = BdClass.getConnection().prepareStatement(
+					"SELECT * FROM FluxAudio where IdFichier = ?");
+			statement.setInt(1, idFichier);
+			ResultSet resultat = statement.executeQuery();
+			langues += resultat.getString("Langue");
+			langues += ", ";
+			
+			assert (!resultat.next());	//Normalement il doit y avoir un seul. (Un fichier doit contenir un seul type fluxaudio)
+		}
+		System.out.println("Langues disponible dans ce film : " + langues);
+	}
+	
+	/** Renvoyer les Id des fichiers associer à CE FILM 
+	 * @throws SQLException **/
+	public List<Integer> getFichier() throws SQLException {
+		List<Integer> list_ID = new ArrayList<Integer>();
+		PreparedStatement statement = BdClass.getConnection().prepareCall(""
+				+ "SELECT * FROM ContenuMultimedia WHERE titre = ? and anneeSortie = ?");
+		statement.setString(1, this.titre);
+		statement.setInt(2, this.anneeSortie);
+		ResultSet resultat = statement.executeQuery();
+		while (resultat.next()) {
+			list_ID.add(resultat.getInt("idFichier"));
+		}
+		return list_ID;
+	}
+	
 }
