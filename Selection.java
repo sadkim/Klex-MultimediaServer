@@ -3,61 +3,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Selection {
+public abstract class Selection {
 	/* Permet à l'utilisateur de faire une selection*/
 	
-	public static void readInfoSelection() throws SQLException {
+	public static void readInfoSelection() {
 		System.out.println("Veuillez choisir le type de contenu que vous voulez afficher: F (Film), A (Album), P(Piste)");
 		String type = Klex.scanner.nextLine();
 		switch(type) {
 			case "F":
 				System.out.println("Veuillez tapez le categorie de Film");
 				String categorieFilm = Klex.scanner.nextLine();
-				while(!CategorieFilm.ExisteCategFilm(categorieFilm)) {
-					System.out.println("Aucun film de ce categorie n'existe.");
-					System.out.println("Veuillez tapez un autre categorie.");
-					categorieFilm = Klex.scanner.nextLine();
-				}
-				SelectFilm(categorieFilm);
+
 				break;
 				
 			case "A" :
-				System.out.println("Veuillez tapez la categorie de musique");
-				String categorieMusique = Klex.scanner.nextLine();
-				while(!CategorieMusique.ExisteCategMusique(categorieMusique)) {
-					System.out.println("Aucun album de ce categorie n'existe.");
-					System.out.println("Veuillez tapez un autre categorie.");
-					categorieMusique = Klex.scanner.nextLine();
-			}
-				SelectAlbum(categorieMusique);
+
 				break;
 				
 			case "P" :
-				System.out.println("Veuillez tapez la categorie de piste");
-				String categoriePiste = Klex.scanner.nextLine();
-				while(!CategorieMusique.ExisteCategMusique(categoriePiste)) {
-					System.out.println("Aucun album de ce categorie n'existe.");
-					System.out.println("Veuillez tapez un autre categorie.");
-					categoriePiste = Klex.scanner.nextLine();
-			}
-				SelectPiste(categoriePiste);
+
 				break;				
 		}
 	}
-	
-	public static void SelectFilm(String categorie) throws SQLException {
-		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Film WHERE CATEGORIE LIKE '%?%'");
-		statement.setString(1, categorie);
-		ResultSet resultat = statement.executeQuery();
-		int index = 1;
-		while (resultat.next()) {
-			String Titrefilm = resultat.getString("titre");
-			int anneeSortie = resultat.getInt("anneeSortie");
-			System.out.println(index + "  Titre : " + Titrefilm + "|" + "Année Sortie : " + anneeSortie);
-			index++;
-		}
-	}
-
+	public abstract void readInfoSelectionType() throws SQLException;
 	
 	public static void SelectPiste(String categorie) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Pistes WHERE CATEGORIE LIKE '%?%'");
