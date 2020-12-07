@@ -2,3 +2,4 @@
 /EmailAlreadyExistsException.class
 /FilmAlreadyExistsException.class
 /FilmDoesNotExistException.class
+/FilmAlreadyExistException.class
