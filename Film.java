@@ -295,11 +295,13 @@ public class Film {
 	}
 	
 	public static void supprimerFilm(String titre, int anneeSortie) throws SQLException {
-		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+		
+		/** Suppression des fichiers associees au film */
+		PreparedStatement statement1 = BdClass.getConnection().prepareStatement(
 				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.Titre like '*?*' and m.AnneeSortie = ?");
-		statement.setString(1, titre);
-		statement.setInt(2, anneeSortie);
-		ResultSet resultat = statement.executeQuery();
+		statement1.setString(1, titre);
+		statement1.setInt(2, anneeSortie);
+		ResultSet resultat = statement1.executeQuery();
 		while(resultat.next()) {
 			int idFichierSuppr = resultat.getInt("idFichier"); // avoir si l'attribut de la table de jointure est bien idFichier
 			PreparedStatement statementSupprFichier = BdClass.getConnection().prepareStatement(
@@ -307,6 +309,24 @@ public class Film {
 			statementSupprFichier.setInt(1, idFichierSuppr);
 			statementSupprFichier.executeQuery();
 		}
+		
+		/** Suppression des roles associees au film */
+		PreparedStatement statement2 = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM ContributionFilm c where c.Titre like '*?*' and c.AnneeSortie = ?");
+		statement2.setString(1, titre);
+		statement2.setInt(2, anneeSortie);
+		ResultSet resultat1 = statement2.executeQuery();
+		while(resultat1.next()) {
+			int numArtisteSuppr = resultat1.getInt("numArtiste"); 
+			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
+					"DELETE FROM ContributionFilm WHERE numArtiste = ? and Titre like '*?*' and AnneeSortie = ?");
+			statementSupprRole.setInt(1, numArtisteSuppr);
+			statementSupprRole.setString(2, titre);
+			statementSupprRole.setInt(3, anneeSortie);
+			statementSupprRole.executeQuery();
+		}
+		
+		/** Suppression du film */
 		PreparedStatement statementSupprFilm = BdClass.getConnection().prepareStatement(
 				"DELETE FROM Film WHERE titre like ='*?*' and anneeSortie = ?");
 		statementSupprFilm.setString(1, titre);

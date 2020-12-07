@@ -145,4 +145,12 @@ public class Artist {
 		}
 		return null;
 	}
+	
+	/** Donne le nom de l'artiste à partir de son identifiant **/
+	public static String getNomArtiste(int numArtiste) throws SQLException{
+		PreparedStatement s = BdClass.getConnection().prepareStatement("SELECT NomArtiste FROM ARTIST where NumArtiste = ?");
+		s.setInt(1, numArtiste);
+		ResultSet result = s.executeQuery();
+		return null;
+	}
 }
