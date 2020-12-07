@@ -19,7 +19,7 @@ public class Selection {
 				break;
 				
 			case "A" :
-				SelectionPiste.readInfoSelectionAlbum();
+				SelectionAlbum.readInfoSelectionAlbum();
 				break;				
 		}
 	}
