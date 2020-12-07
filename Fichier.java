@@ -2,7 +2,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-
 import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
 
@@ -60,7 +59,7 @@ public class Fichier {
 							Film.readInfoFilm(idFichier);
 							repeat = false;
 						} catch (FilmAlreadyExistException e) {
-							System.out.println("le film que vous essayez de créer existe déja ");
+							System.out.println("le tfilm que vous essayez de créer existe déja ");
 ;
 						}
 						break;
@@ -103,19 +102,18 @@ public class Fichier {
 			contenuMultimedia(idFichier, film.getTitre(), film.getAnneeSortie(), 0, 0);
 			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et fichier sont reliés");
 		}
-		
-		public static void addFichier(float tailleFichier, Piste piste ) throws SQLException {
-			ajouterFichierEntree(tailleFichier);
+	
+		public static void addFichier(float tailleFichier,Piste piste) throws SQLException {
+			int idFichier =ajouterFichierEntree(tailleFichier);
 			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier ajouté");
-			contenuMultimedia(null, 0, piste.getIdAlbum() , piste.getnumPiste());
-			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("piste et fichier sont reliés");
-		}	
-		
+			contenuMultimedia(idFichier,null ,0, piste.getIdAlbum(), piste.getnumPiste());
+			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et fichier sont reliés");
+		}
+	
 		/*
 		 * \brief ajoute l'entrée Fichier à la base de donnée et la relie à l'utilisateur actuellement connecté*/
 		
-		private static void ajouterFichierEntree(float tailleFichier) throws SQLException {
-			
+		private static int ajouterFichierEntree(float tailleFichier) throws SQLException {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("Select idFichierSeq.nextval From dual");
 			ResultSet resultat = statement.executeQuery();
 			int idFichier= resultat.getInt("NEXTVAL");
@@ -127,7 +125,9 @@ public class Fichier {
 			statement.executeQuery();
 			return idFichier;
 		}
-				
+		
+	
+		
 		
 		private static void contenuMultimedia(int idFichier, String Titre, int anneeSortie,int IdAlbum, int numPiste ) throws SQLException {// ne pas utiliser avant de verifier que le film ou l'album existent bien
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO ContenuMultimedia (idFichier, Titre, AnneeSortie,IdAlbum,NumPiste ) values(idFichierSeq.nextval,sysdate,?,?)");
@@ -136,7 +136,7 @@ public class Fichier {
 			statement.setString(2, Titre);
 			statement.setInt(3, anneeSortie);
 			}
-			if(anneeSortie ==0) {
+			if(anneeSortie !=0) {
 				statement.setInt(4, IdAlbum);
 				statement.setInt(5, numPiste);
 			}
