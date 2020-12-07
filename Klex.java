@@ -188,7 +188,7 @@ public class Klex {
 
 
 			case "ajout_piste":
-				Piste.readInfoPiste();
+				Piste.readInfoPiste(1);
 				break;				
 			case "ajout_filtre":
 				System.out.println("choisissez le type de filtre langue |langueSousTitre | categorie");
@@ -219,13 +219,20 @@ public class Klex {
 					System.out.println("filtreEronnée");	
 				}
 				Film.addFilter(new Filtre(categ, valeur));
-
-
-
 				break;
 
 			case "vider_filtres":	
 				Film.deleteFilters();
+				break;
+				
+			case "supprimer_film":
+				Film.toSupprimeFilm();
+				break;
+				
+			case "supprimer_piste":
+				Piste.readInfoPiste(0);
+				break;
+				
 			case "exit":
 	    		continuer = false;
 	    		break;
@@ -243,8 +250,9 @@ public class Klex {
 		System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
 		System.out.println("tapez ajout_album si vous voulez ajouter un nouveau album");
 		System.out.println("tapez ajout_piste si vous voulez ajouter un nouveau piste");
+		System.out.println("tapez supprimer_piste si vous voulez supprimer une piste");
 		System.out.println("tapez ajout_film si vous voulez ajouter un nouveau film");
-		
+		System.out.println("tapez supprimer_film si vous voulez supprimer un film");
 		/* Ajout de modification : a rassembler dans une commande apres */
 		System.out.println("tapez ajout_flux si vous voulez ajouter un nouveau logiciel");
 	}

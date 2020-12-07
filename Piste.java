@@ -33,10 +33,10 @@ public class Piste {
 	}
 	
 	/** Cette méthode permet de lire les informations d'une piste à partir de l'interface Klex **/
-	public static void readInfoPiste(){
+	public static void readInfoPiste(boolean addDelete){
 		/* Lecture des informations de  l'album */
 		try{
-			System.out.println("le nom artiste ?");
+			System.out.println("le nom de l'artiste ?");
 			String nomArtiste = Klex.scanner.nextLine();
 			Integer numArtiste = Artist.getNumArtiste(nomArtiste);
 			if (numArtiste == null){
@@ -50,7 +50,7 @@ public class Piste {
 				System.out.println("Cet album n'existe pas");
 				return;
 			}
-			readInfoPiste(idAlbum );
+			readInfoPiste(idAlbum, addDelete);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -58,15 +58,18 @@ public class Piste {
 	}
 
 	/** Cette méthode permet de lire les informations d'une piste aprés la création de l'album **/
-	public static void readInfoPiste(int idAlbum) {
+	public static void readInfoPiste(int idAlbum, boolean addDelete) {
 		System.out.println("le titre de la piste ? ");
 		String titre = Klex.scanner.nextLine();
-		
-		System.out.println("la durée de la piste ? ");	
-		int dureePiste = Klex.scanner.nextInt();
-			
+	
 		try {
-			addPiste (idAlbum, titre, dureePiste);
+			System.out.println("la durée de la piste ? ");	
+			int dureePiste = Klex.scanner.nextInt();
+			
+			if(addDelete)
+				addPiste (idAlbum, titre, dureePiste);
+			else
+				toSupprimePiste(idAlbum, titre);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -155,10 +158,8 @@ public class Piste {
     						Fichier.addFichier(taille, new Piste(IdAlbum , nbPiste + 1));
 							contSatis = true;
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (PisteDoesNotExistException e) {
-						// TODO Auto-generated catch block
     					System.out.println("cette piste n'existe pas");
 						}
     				}else if (commande.equals("annuler")){
@@ -194,6 +195,24 @@ public class Piste {
 		return false; 
 	}
 	
+	
+	public static void toSupprimePiste(int IdAlbum, String titrePiste) throws SQLException{
+		if (Album.AlbumExiste(IdAlbum)) {
+			PreparedStatement statement = BdClass.getConnection().prepareStatement(
+					"SELECT * FROM PISTES where IdAlbum = ? and titrePiste = ?");
+			
+			statement.setInt(1,IdAlbum);
+			statement.setString(2, titrePiste);
+			ResultSet resultat = statement.executeQuery();
+			
+			if (resultat.next()) {
+				supprimerPiste(IdAlbum, resultat.getInt("numPiste"));
+			}
+			else {
+				System.out.println("Cette piste n'existe pas dans l'Album.");
+			}
+		}
+	}
 	
 	public static void supprimerPiste(int IdAlbum, int numPiste) {
 		
@@ -237,6 +256,7 @@ public class Piste {
 		/** Nettoyage des Artistes et de Album*/
 		Artist.nettoyageArtiste();
 		Album.nettoyageAlbum();
+		BdClass.getConnection().commit(); //<<======= ici le commit 
 
 	}
 

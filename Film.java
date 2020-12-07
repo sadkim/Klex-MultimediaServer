@@ -120,10 +120,8 @@ public class Film {
     					contrainteSatis = true;
     					message = "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier tappez ajouteFichier, tappez n'importe quoi pour quitter";
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (FilmDoesNotExistException e) {
-						// TODO Auto-generated catch block
     					System.out.println("ce film n'existe pas");
 					}
     			}
@@ -293,6 +291,21 @@ public class Film {
 		}
 		statement.executeQuery();
 	}
+
+	public static void toSupprimeFilm() throws SQLException{
+		System.out.println("Titre du film à supprimer svp");
+		String titre = Klex.scanner.nextLine();
+		System.out.println("L'année de sortie du film à supprimer svp");
+		int anneeSortie = Klex.scanner.nextLine();
+		boolean existe = existeFilm(titre, anneeSortie);
+		if (!existe) {
+			System.out.println("Ce film n'existe pas dans la base de données.");
+		}
+		else {
+			supprimerFilm(titre, anneeSortie);
+		}
+
+	}
 	
 	public static void supprimerFilm(String titre, int anneeSortie) throws SQLException {
 		
@@ -336,6 +349,7 @@ public class Film {
 		/** Nettoyage des Artistes et de Album*/
 		Artist.nettoyageArtiste();
 		Album.nettoyageAlbum();
+		BdClass.getConnection().commit(); //<<======= ici le commit 
 	}
 	
 }
