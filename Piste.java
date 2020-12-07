@@ -3,12 +3,57 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
+import except.PisteDoesNotExistException;
+
 public class Piste {
 	
+	private int idAlbum ;
+	private int numPiste;
+	
+	public int getIdAlbum () {
+		return idAlbum ;
+	}
+
+	public int getnumPiste() {
+		return numPiste ;
+	}
+
+	public Piste (int idAlbum , int numPiste) throws SQLException, PisteDoesNotExistException {
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+				"Select * From Pistes where idAlbum = ? and numPiste = ?");
+		statement.setInt(1, idAlbum);
+		statement.setInt(2, numPiste);
+		ResultSet resultat =statement.executeQuery();
+		if(resultat.next()) {
+			this.idAlbum  = resultat.getInt("idAlbum");
+			this.numPiste = resultat.getInt("numPiste");
+		}else {
+			throw new PisteDoesNotExistException();
+		}
+	}
+	
+
+	/** Cette méthode permet de lire les informations d'une piste aprés la création de l'album **/
+	public static void readInfoPiste(int idAlbum) {
+		System.out.println("le titre de la piste ? ");
+		String titre = Klex.scanner.nextLine();
+		
+		System.out.println("la durée de la piste ? ");	
+		int dureePiste = Klex.scanner.nextInt();
+			
+		try {
+			addPiste (idAlbum, titre, dureePiste);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+
 	public static void addPiste(int IdAlbum, String titrePiste, int dureePiste) throws SQLException {
 		if (Album.AlbumExiste(IdAlbum)) {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement(
-					"SELECT * FROM PISTE where IdAlbum = ? and titrePiste = ?");
+					"SELECT * FROM PISTES where IdAlbum = ? and titrePiste = ?");
 			
 			statement.setInt(1,IdAlbum);
 			statement.setString(2, titrePiste);
@@ -36,24 +81,24 @@ public class Piste {
 				while (!fini || !contrainteSatis){
 					System.out.println("Tapez Categoriser pour associer la piste à une categorie existante");
 					System.out.println("Tapez nouvelleCategorie si vous avez besoin de créer une nouvelle catégorie");
-					System.out.println("Tapez fini si vous avez voulez confirmer la creation de l'album");
+					System.out.println("Tapez fini si vous avez voulez avez fini la catégorisation de la piste");
 				
 					String commande = Klex.scanner.nextLine();
 					switch (commande) {
 						case "Categoriser":
 							Savepoint svptCategorisation = BdClass.getConnection().setSavepoint("svpCategorisation");
 							boolean ajoute = CategorisationPiste.readInfoCategoPiste(IdAlbum , nbPiste + 1,  true);
-						if (ajoute){
-							contrainteSatis = contrainteSatis || confirmerAvecCascade(
-								"Voulez vous confirmer la catégorisation [Y/N]", svpCategorisation);
-						}
+							if (ajoute){
+								contrainteSatis = contrainteSatis || Confirmation.confirmerAvecCascade(
+								"Voulez vous confirmer la catégorisation [Y/N]", svptCategorisation);
+							}
 						break;
 
 						case "nouvelleCategorie":
 							Savepoint ajoutCategorie = BdClass.getConnection().setSavepoint("svpCategorie");
-							lireCategMusique(true);
-							boolean ajoute1 = confirmerAvecCascade( "Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]",
-								svpCategorie);
+							CategorieMusique.lireCategMusique(true);
+							boolean ajoute1 = Confirmation.confirmerAvecCascade(
+									"Voulez vous confirmer l'ajout de cette catégorie ? [Y/N]", ajoutCategorie);
 							if (ajoute1){ System.out.println("maintenant, il faut ajouter l'album à cette catégorie"); };
 							break;
 
@@ -70,11 +115,42 @@ public class Piste {
 				}
 
 				/**Association Piste et fichier**/
-				//TODO doit etre forcee : au moins un fichier  : les lfux seront frocés dans la création fichier 
 				
-				//ici le commit
-				boolean confirme = Confirmation.confirmerSansCascade("Voulez vous confirmer la création de la piste ? ");
-				if (!confirme){ return ;} //Annulation 
+				System.out.println("à chaque piste doit être associée au moins un fichier");
+				boolean ajoutFichierFini = false;
+				boolean contSatis = false;
+				while (!ajoutFichierFini || contrainteSatis){
+					System.out.println("tapez ajouteFichier pour ajouter un fichier");
+					System.out.println("tapez annuler pour annuler la création de la piste");
+					System.out.println("taper autre chose pour terminer");
+					String commande = Klex.scanner.nextLine();
+					if(commande.equals("ajouteFichier")) {
+    					System.out.println("quelle est la taille de votre fichier ?");
+    					float taille = Float.parseFloat(Klex.scanner.nextLine());
+    					try {
+    						Fichier.addFichier(taille, new Piste(IdAlbum , nbPiste + 1));
+							contSatis = true;
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (PisteDoesNotExistException e) {
+						// TODO Auto-generated catch block
+    					System.out.println("cette piste n'existe pas");
+						}
+    				}else if (commande.equals("annuler")){
+    					BdClass.getConnection().rollback();
+    					System.out.println("ajout piste annulé");
+						return;
+					}else{
+						if (!contSatis){
+							System.out.println("vous devez au moins associer un fichier");
+						}
+						else{
+							ajoutFichierFini = true;	
+						}
+					}
+    			}
+				BdClass.getConnection().commit(); //<<======= ici le commit 
 			}
 		}
 	}

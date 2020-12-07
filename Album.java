@@ -134,10 +134,22 @@ public class Album {
 						System.out.println("mauvais reponse");
 				}
 			}
+			
 			/* On suggere la creation d'une piste au moins : on renvoie vers la creation des pistes mais en
 		 	* enregistrant l'id de l'album */
-			System.out.println("Voulez vous ajouter des pistes a cet album ? [Y/N]");
-			//TODO
+			while (true){
+				System.out.println("Tapez [P] si vous voulez ajouter une piste, Tapez [T] si vous voulez terminer");
+				String reponse = Klex.scanner.nextLine();
+				switch (reponse){
+					case "P":
+						Piste.readInfoPiste(idAlbum);
+						break;
+					case "T":
+						return;
+					default :
+						System.out.println("mauvais réponse");
+				}
+			}
 		}
 	}
 	

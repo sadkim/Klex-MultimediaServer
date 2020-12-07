@@ -50,14 +50,14 @@ public class CategorisationPiste {
 
 	public static boolean ajouterCategPiste(int idAlbum, int numPiste, String categorie, boolean enCascade) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
-				"INSERT INTO CategorisationFilm (titre, anneeSortie, categorie) values(?,?,?)");
+				"INSERT INTO CategorisationPiste(idAlbum, numPiste, categorie) values(?,?,?)");
 		statement.setInt(1, idAlbum);
 		statement.setInt(2, numPiste);
 		statement.setString(3, categorie);
 		statement.executeQuery();
 		if (!enCascade){
-			Confirmation.confirmerSansCascade("Voulez vous confirmer cette categorisation ? ");
+			return Confirmation.confirmerSansCascade("Voulez vous confirmer cette categorisation ? ");
 		}
-		return false;// j'ai ajouter ça pour corriger l'erreur 
+		return true; 
 	}
 }

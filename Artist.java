@@ -89,18 +89,18 @@ public class Artist {
 		
 		PreparedStatement statement = BdClass.getConnection().prepareStatement( 
 				"INSERT INTO Artist(NumArtiste,NomArtiste,URLphotoArtiste,biographie, specialitePrincipale, DateNaissance)"+
-				"values( numArtistSeq.nextval,?,?,?,?,?)");
+				"values( IdArtistSeq.nextval,?,?,?,?,?)");
 
-		statement.setString(2, nomArtiste);
-		statement.setString(3, urlPhotoArtiste);
+		statement.setString(1, nomArtiste);
+		statement.setString(2, urlPhotoArtiste);
 		if (biographie == null){
-			statement.setString(4, null);
+			statement.setString(3, null);
 		}
 		else{
-			statement.setString(4, biographie);
+			statement.setString(3, biographie);
 		}
-		statement.setString(5, specialiteP);
-		statement.setDate(6, new java.sql.Date(dateNaissance.getTime()));
+		statement.setString(4, specialiteP);
+		statement.setDate(5, new java.sql.Date(dateNaissance.getTime()));
 		statement.executeQuery();
 
 		/* Commit si et seulement si l'insertion est faite depuis la classe Klex */

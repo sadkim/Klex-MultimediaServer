@@ -99,11 +99,18 @@ public class Fichier {
 			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film et fichier sont reliés");
 		}
 		
+		public static void addFichier(float tailleFichier, Piste piste ) throws SQLException {
+			ajouterFichierEntree(tailleFichier);
+			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier ajouté");
+			contenuMultimedia(null, 0, piste.getIdAlbum() , piste.getnumPiste());
+			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("piste et fichier sont reliés");
+		}	
+		
 		/*
 		 * \brief ajoute l'entrée Fichier à la base de donnée et la relie à l'utilisateur actuellement connecté*/
 		
 		private static void ajouterFichierEntree(float tailleFichier) throws SQLException {
-			PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO Fichier (idFichier, Date, tailleFichier, Email) values(idFichierSeq.nextval,sysdate,?,?)");
+			PreparedStatement statement = BdClass.getConnection().prepareStatement("INSERT INTO Fichier (idFichier, DateFichier, tailleFichier, Email) values(idFichierSeq.nextval,sysdate,?,?)");
 			statement.setFloat(1, tailleFichier);
 			statement.setString(2, User.getEmail());
 			statement.executeQuery();
@@ -123,7 +130,7 @@ public class Fichier {
 			statement.setString(2, Titre);
 			statement.setInt(3, anneeSortie);
 			}
-			if(anneeSortie !=0) {
+			if(anneeSortie ==0) {
 				statement.setInt(4, IdAlbum);
 				statement.setInt(5, numPiste);
 			}
