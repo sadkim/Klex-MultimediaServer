@@ -231,16 +231,21 @@ public class Film {
 	
 	
 	
-	public static void searchFilm(String name) throws SQLException {
-		String req = "SELECT Film.titre, Film.anneeSortie FROM Film, Fichier, Flux, Contribution, CategorisationFilm " +
-			"where Film.titre  = categorisationFilm.titre and Film.anneeSortie = categorisationFilm.anneeSortie" + 
+	public static void searchFilm(String name) throws SQLException { 
+		//TODO : j'ai supprimé contribution de la commande : pas de contrainte en tous cas de jointure 
+		String req = "SELECT Distinct Film.titre, Film.anneeSortie , Film.resume, Film.urlAffiche  " +
+			"FROM Film, Fichier, Flux, CategorisationFilm , ContenuMultimedia " +
+			"where Film.titre  = categorisationFilm.titre and Film.anneeSortie = categorisationFilm.anneeSortie " + 
 			"and Film.titre =ContenuMultimedia.titre and Film.anneeSortie  = contenuMultimedia.anneeSortie and " + 
 			"contenuMultimedia.idFichier= Fichier.idFichier and Flux.idFichier = Fichier.idFichier  and " + 
-			"Film.titre like '*?*' and ageMin < ? and ";
+			"Film.titre like ? and ageMin < ? and ";
+		
 		req += "(";
-
+		
+		String to_terminate = "1 = 1";
 		for(Filtre monFiltre: filtres) {
 			if(monFiltre.getChamp().equals("langue")) {
+				to_terminate = "1 = 0";
 				req += " (Flux.";
 				req += monFiltre.getChamp();
 				req += " = ";
@@ -250,14 +255,15 @@ public class Film {
 			}
 
 		}
-		req += "1 = 0";
+		req += to_terminate;
 		req += ")";
 		req+=" AND ";
 
 		req += "(";
-
+		to_terminate = "1 = 1";
 		for(Filtre monFiltre: filtres) {
 			if(monFiltre.getChamp().equals("langueSousTitre")) {
+				to_terminate = "1 = 0";
 				req += " (Flux.langue = ";
 				req += monFiltre.getValeur();
 				req += " and flux.type = text)";
@@ -265,30 +271,31 @@ public class Film {
 			}
 
 		}
-		req += "1 = 0";
+		req += to_terminate;
 		req += ")";
 
 		req+=" AND ";
 		req += "(";
 
+		to_terminate = "1 = 1";
 		for(Filtre monFiltre: filtres) {
 			if(monFiltre.getChamp().equals("categorie")) {
+				to_terminate = "1 = 0";
 				req += " ";
 				req += monFiltre.getChamp();
 				req += " = ";
-				req += monFiltre.getValeur();
+				req += "'" + monFiltre.getValeur() + "'";
 				req += " OR ";
 			}
 
 		}
-		req += "1 = 0";
+		
+		req += to_terminate;
 		req += ")";
 
-		
-		
 		req += "order by titre";
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(req);
-		statement.setString(1, name);
+		statement.setString(1, "%"+ name + "%");
 		statement.setInt(2, User.getAge());
 		ResultSet resultat =statement.executeQuery();
 		System.out.println("titre | annéeSortie | Resume | UrlAffiche");

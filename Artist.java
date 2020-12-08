@@ -114,7 +114,10 @@ public class Artist {
 		String commande = Klex.scanner.nextLine();
 		if (commande.equals("contribution")){
 			ContributionArtiste.contributionsEnCascade(getNumArtiste(nomArtiste));
-		}	
+		}
+		else{
+			return;
+		}
 	}
 	
 	/** Permet de savoir si l'artiste existe deja dans la base de donnees */
@@ -169,7 +172,7 @@ public class Artist {
 	public static void nettoyageArtiste() throws SQLException{  
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 				"SELECT NumArtiste FROM ARTIST where NumArtiste NOT IN (SELECT NumArtiste FROM ContributionPiste" + 
-				"UNION SELECT NumArtiste FROM ContributionFilm  UNION SELECT NumArtiste FROM Album )");
+				" UNION SELECT NumArtiste FROM ContributionFilm  UNION SELECT NumArtiste FROM Album )");
 		ResultSet result = s.executeQuery();
 		while(result.next()){
 			int numArtisteSuppr = result.getInt("NumArtiste"); 

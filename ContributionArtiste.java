@@ -5,11 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class ContributionArtiste {
-
+	
 	/** on va faire un commit car les contributions ne sont pas obligatoires, on fait un commit de piste et de film
 	 * avant appel à ces méthodes 
 	 * ces méthodes ne vérifient pas complétement l'existance des élements **/
-	//TODO : plus de vérifications 
 	private static void readContribPiste(int numArtiste) throws SQLException{
 		System.out.println("Insérez le nom de l'album");
 		String titreAlbum = Klex.scanner.nextLine();
@@ -158,6 +157,28 @@ public class ContributionArtiste {
 					System.out.println("mauvais réponse");
 					break;
 			}
+		}
+	}
+
+	public static void ajouterUneContribution() throws SQLException{
+		System.out.println("Tapez le nom de l'artiste");
+		String nomArtiste = Klex.scanner.nextLine();
+		Integer numArtiste = Artist.getNumArtiste(nomArtiste);
+		if (numArtiste == null){
+			System.out.println("l'artiste n'existe pas");
+			return;
+		}
+		System.out.println("Tapez [film] si vous voulez ajouter une intervention dans un film");
+		System.out.println("Tapez [piste] si vous voulez ajouter une intervention dans une piste");
+		System.out.println("Tapez autre chose pour annuler cette opération");
+		String commande = Klex.scanner.nextLine();
+		if (commande.equals("film")){
+			readContribFilm(numArtiste);
+		} else if (commande.equals("piste")){
+			readContribPiste(numArtiste);
+		}
+		else{
+			return;
 		}
 	}
 }
