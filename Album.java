@@ -7,8 +7,21 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-public class Album {
+import java.util.ArrayList;
+import java.util.List;
 
+public class Album {
+	
+	private static List<Filtre> filtres = new ArrayList<Filtre>();
+	
+	public static void addFilter(Filtre filtre) {
+		Album.filtres.add(filtre);
+	}
+	
+	public static void deleteFilters() {
+		Album.filtres.clear();
+	}
+	
 	public static void readInfoAlbum () {
 		System.out.println("Nom du album?");
 		String titre = Klex.scanner.nextLine();
@@ -237,6 +250,42 @@ public class Album {
 					"DELETE FROM Album WHERE IdAlbum = ?");
 			statementSuppr.setInt(1, idAlbumSuppr);
 			statementSuppr.executeQuery();
+		}
+	}
+	
+	public static void rechercheFiltreAlbum(String name) throws SQLException { 
+		
+		String req = "SELECT Album.titreAlbum , Album.dateSortieAlbum , Artist.nomArtiste " +
+			"FROM Album , Artist, CategorisationAlbum  " + 
+			"Where Album.idAlbum = CategorisationAlbum.idAlbum and Album.numArtiste = Artist.numArtiste " + 
+			"and Album.titreAlbum like ? and ";
+
+		req += "(";
+		
+		String to_terminate = "1 = 1";
+		for(Filtre monFiltre: filtres) {
+			if(monFiltre.getChamp().equals("categorie")) {
+				to_terminate = "1 = 0";
+				req += " ";
+				req += monFiltre.getChamp();
+				req += " = ";
+				req += "'" + monFiltre.getValeur() + "'";
+				req += " OR ";
+			}
+		}
+		
+		req += to_terminate;
+		req += ")";
+
+		req += " order by titreAlbum";
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(req);
+		statement.setString(1, "%"+ name + "%");
+
+		ResultSet resultat =statement.executeQuery();
+		System.out.println("titre de l'album | date de sortie | artiste principale");
+		while(resultat.next()) {
+			System.out.println(resultat.getString("titreAlbum")+" | "+ resultat.getDate("dateSortieAlbum") + 
+					" | "+  resultat.getString("nomArtiste")); 
 		}
 	}
 }

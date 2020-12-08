@@ -116,8 +116,16 @@ public class Klex {
 				ajoutContenus();
 				break;
 
-			case "chercher_contenus":
-				chercherContenus();
+			case "chercher_films":
+				chercherFilms();
+				break;
+			
+			case "chercher_pistes":
+				chercherPistes();
+				break;
+
+			case "chercher_albums":
+				chercherAlbums();
 				break;
 			
 			case "supprimer":
@@ -205,7 +213,7 @@ public class Klex {
 		}
 	}
 		
-	private static void chercherContenus()throws SQLException {
+	private static void chercherFilms()throws SQLException {
 		String commande;
 	    boolean continuer= true;
 		while(continuer) {
@@ -271,6 +279,131 @@ public class Klex {
 				
 	}
 	
+	private static void chercherPistes()throws SQLException {
+		String commande;
+	    boolean continuer= true;
+		while(continuer) {
+	    
+	    	System.out.println("tappez aide pour voir les commandes disponibles");
+	    	
+	    	commande = scanner.nextLine();
+	    	switch(commande) {
+	   			case "aide":
+	    			help5();
+					break;
+	    	
+				case "ajout_filtre":
+					System.out.println("choisissez le type de filtre langue | categorie");
+					String categ = scanner.nextLine();
+					String valeur = "";
+					if(categ.equals("langue")) {
+						boolean repeat = true;
+						while(repeat) {
+							System.out.println("choisissez la langue");
+							Langue.languesDisponibles();
+							valeur = scanner.nextLine();
+							if(Langue.langueExiste(valeur)) {
+								repeat =false;
+							}
+						}
+					}else if(categ.equals("categorie")) {
+						boolean repeat = true;
+						while(repeat) {
+							System.out.println("choisissez la categorie");
+							CategorieMusique.CategoriesMusiqueDispo();
+							valeur = scanner.nextLine();
+							if(CategorieMusique.ExisteCategMusique(valeur)){
+								repeat =false;
+							}
+						}
+					
+					}else{
+						System.out.println("filtreEronnée");	
+					}
+
+					Piste.addFilter(new Filtre(categ, valeur));
+					break;
+
+				case "chercher":
+					System.out.println("Tapez le nom de la piste que vous voulez chercher");
+					System.out.println("Tapez sur la touche Entrer si vous voulez faire une recherche globale");
+					String name = scanner.nextLine();
+					Piste.rechercheFiltrePiste(name);
+					break;
+
+				case "vider_filtres":	
+					Piste.deleteFilters();
+					break;
+				
+				case "exit":
+	    			continuer = false;
+	    			break;
+	    	
+				default:
+		    		System.out.println("klex est un logiciel de gestion de fichiers");
+	    			break;
+			}
+		}
+				
+	}
+
+	private static void chercherAlbums() throws SQLException {
+		String commande;
+	    boolean continuer= true;
+		while(continuer) {
+	    	System.out.println("tappez aide pour voir les commandes disponibles");
+	    	
+	    	commande = scanner.nextLine();
+	    	switch(commande) {
+	   			case "aide":
+	    			help5();
+					break;
+	    	
+				case "ajout_filtre":
+					System.out.println("choisissez le type de filtre : categorie");
+					String categ = scanner.nextLine();
+					String valeur = "";
+					
+					if(categ.equals("categorie")) {
+						boolean repeat = true;
+						while(repeat) {
+							System.out.println("choisissez la categorie");
+							CategorieMusique.CategoriesMusiqueDispo();
+							valeur = scanner.nextLine();
+							if(CategorieMusique.ExisteCategMusique(valeur)){
+								repeat =false;
+							}
+						}
+					
+					}else{
+						System.out.println("filtreEronnée");	
+					}
+
+					Album.addFilter(new Filtre(categ, valeur));
+					break;
+
+				case "chercher":
+					System.out.println("Tapez le nom de l'album que vous voulez chercher");
+					System.out.println("Tapez sur la touche Entrer si vous voulez faire une recherche globale");
+					String name = scanner.nextLine();
+					Album.rechercheFiltreAlbum(name);
+					break;
+
+				case "vider_filtres":	
+					Album.deleteFilters();
+					break;
+				
+				case "exit":
+	    			continuer = false;
+	    			break;
+	    	
+				default:
+		    		System.out.println("klex est un logiciel de gestion de fichiers");
+	    			break;
+			}
+		}
+	}
+
 	private static void suppressionContenus() throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -366,7 +499,9 @@ public class Klex {
 	private static void help1(){
 		System.out.println("Tapez [ajouter_contenus] si vous voulez faire des ajouts" + 
 				"[film/piste/artiste/interventions/fichiers/logiciel]");
-		System.out.println("Tapez [chercher_contenus] pour faire des recherches dans la base");
+		System.out.println("Tapez [chercher_films] pour faire des recherches filtrées des films dans la base");
+		System.out.println("Tapez [chercher_pistes] pour faire des recherches filtrées des pistes dans la base");
+		System.out.println("Tapez [chercher_albums] pour faire des recherches filtrées des albums dans la base");
 		System.out.println("Tapez [supprimer] pour supprimer des films ou des pistes");
 		System.out.println("Tapez modifier si vous voulez faire des modifications dans la base");
 		System.out.println("Tapez exit pour se déconnecter");

@@ -230,9 +230,7 @@ public class Film {
 	}
 	
 	
-	
 	public static void searchFilm(String name) throws SQLException { 
-		//TODO : j'ai supprimé contribution de la commande : pas de contrainte en tous cas de jointure 
 		String req = "SELECT Distinct Film.titre, Film.anneeSortie , Film.resume, Film.urlAffiche  " +
 			"FROM Film, Fichier, Flux, CategorisationFilm , ContenuMultimedia " +
 			"where Film.titre  = categorisationFilm.titre and Film.anneeSortie = categorisationFilm.anneeSortie " + 
@@ -249,8 +247,8 @@ public class Film {
 				req += " (Flux.";
 				req += monFiltre.getChamp();
 				req += " = ";
-				req += monFiltre.getValeur();
-				req += " and flux.type = audio)";
+				req += "'" + monFiltre.getValeur() + "'";
+				req += " and flux.type = 'audio')";
 				req += " OR ";
 			}
 
@@ -265,8 +263,8 @@ public class Film {
 			if(monFiltre.getChamp().equals("langueSousTitre")) {
 				to_terminate = "1 = 0";
 				req += " (Flux.langue = ";
-				req += monFiltre.getValeur();
-				req += " and flux.type = text)";
+				req += "'" + monFiltre.getValeur() + "'";
+				req += " and flux.type = 'text')";
 				req += " OR ";
 			}
 
