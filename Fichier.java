@@ -4,13 +4,14 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Scanner;
 
+
 import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
 
 public class Fichier {
 
 	
-		public static void addFichier(float tailleFichier) throws SQLException, FilmDoesNotExistException {
+		public static void addFichier(float tailleFichier) throws SQLException, FilmDoesNotExistException{ 
 			// ajout du fichier à la base de donnée et savepoint
 			
 			int idFichier=ajouterFichierEntree(tailleFichier);
@@ -92,8 +93,66 @@ public class Fichier {
 				
 				
 			case "piste":
-				System.out.println("ecrivez cherche pour chercher une piste  , ecrivez existant pour choisir parmis les pistes existantes et nouveau pour créer une nouvelle piste ou annuler pour revenir à l'étape précedente");
-				//TODO
+				System.out.println("la version actuelle de Klex permet d'associer les fichiers à des nouvelles pistes dont" +
+						"l'album est déjà enregistré dans la base");
+				System.out.println("ecrivez cherche pour chercher une piste, ecrivez existant pour choisir parmis les pistes" +
+						"existantes et nouveau pour créer une nouvelle piste ou annuler pour revenir à l'étape précedente");
+				boolean repeat2 = true;
+				String choix2 = Klex.scanner.nextLine();
+				while(repeat2) {
+					switch(choix2) {
+						case "existant":
+							System.out.println(" Tappez le nom de l'artiste ");
+							String nomArtiste = Klex.scanner.nextLine();
+							System.out.println(" Tappez le titre de l'album ");
+							String titre = Klex.scanner.nextLine();
+							System.out.println(" Tappez le nom de la piste ");
+							String nomPiste = Klex.scanner.nextLine();
+							try {
+								Integer numArtiste = Artist.getNumArtiste(nomArtiste);
+								if (numArtiste == null){
+									System.out.println("le nom de l'artiste que vous avez insérer n'est pas enregistré");
+									break;
+								}
+								Integer idAlbum = Album.trouveIdentifiant(titre, numArtiste);
+								if (idAlbum == null){
+									System.out.println("l'album que vous avez insérer n'est pas enregistrée");
+									break;
+								}
+								
+								Integer numPiste = Piste.getNbPiste(idAlbum , nomPiste);
+								if (numPiste == null){
+									System.out.println("la piste que vous avez insérer n'est pas enregistrée");
+									break;
+								}
+								Piste piste = new Piste(idAlbum , numPiste);
+								contenuMultimedia(idFichier, null,0,  piste.getIdAlbum(), piste.getnumPiste());
+								Savepoint fichierContenu = BdClass.getConnection().setSavepoint("piste_et_fichier_relies");
+								repeat2 = false;
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							break;
+
+						/* creer une nouvelle piste et la relier à ce fichier */
+						case "nouveau" :
+							Piste.readInfoPiste(idFichier, true);
+							repeat2 = false;
+							break;	
+
+						case "annuler":
+							repeat2 = false;
+							break;
+						
+						case "cherche":
+							System.out.println("tappez le nom de la piste pour la chercher");
+							String titre1 = Klex.scanner.nextLine();
+							Piste.searchPiste(titre1);;
+							break;
+						default :
+							break;
+					}
+				}
 				break;
 			}
 			
@@ -132,16 +191,19 @@ public class Fichier {
 		    				Langue.ajouterLangue(langue);
 		    				continu=false;
 		    				repeat = false;
-		    			} else if(rep=="non") {
+		    			} else if(rep.equals("non")) {
 		    				continu = false;
 		    			}
-
 					}
 				}
+				else{
+					repeat = false;
+				}
 			}
+
 			repeat = true;
 			while(repeat) {
-				System.out.println("choisissez la langue le codec");
+				System.out.println("choisissez le codec");
 				Codec.codecDisponibles();
 				codec = Klex.scanner.nextLine();
 				if(!Codec.codecExist(codec)) {
@@ -159,18 +221,27 @@ public class Fichier {
 
 					}
 				}
+				else{
+					repeat = false; //TODO <<==== ajouter car une boucle infini est remarqué 
+				}
 			}
+
 			System.out.println("entrez debit" );
-			debit = Integer.getInteger(Klex.scanner.nextLine());
+			debit = Integer.parseInt(Klex.scanner.nextLine());
 			if(type.equals("video")){
-				System.out.println("entrez resHaueurVid" );
-				resHauteurVid = Integer.getInteger(Klex.scanner.nextLine());
-				System.out.println("entrez resLargeurVid" );
+				boolean erreur = false;
+				while (resHauteurVid == 0 || resLargeurVid == 0){
+					if (erreur){ System.out.println("erreur de saisie, entrez des valeurs non nulles");}
+					System.out.println("entrez resHaueurVid" );
+					resHauteurVid = Integer.parseInt(Klex.scanner.nextLine());
+					System.out.println("entrez resLargeurVid" );
+					resLargeurVid = Integer.parseInt(Klex.scanner.nextLine());
+					erreur = true;
+				}
 			}
 			if(type.equals("audio")){
-				resLargeurVid = Integer.getInteger(Klex.scanner.nextLine());
 				System.out.println("entrez echantillonage" );
-				echantillonage = Integer.getInteger(Klex.scanner.nextLine());
+				echantillonage = Integer.parseInt(Klex.scanner.nextLine());
 			}
 			Flux.addFlux(type, idFichier, langue, codec, debit, resLargeurVid, resHauteurVid, echantillonage);
 		}
@@ -183,15 +254,16 @@ public class Fichier {
 			inssererFlux(idFichier);
 			BdClass.getConnection().commit();
 			System.out.println("Film,et fichiers et flux associés ont été crée ");
-			
-
 		}
 	
 		public static void addFichier(float tailleFichier,Piste piste) throws SQLException {
 			int idFichier =ajouterFichierEntree(tailleFichier);
 			Savepoint fichierAjoute = BdClass.getConnection().setSavepoint("fichier_ajoute");
 			contenuMultimedia(idFichier,null ,0, piste.getIdAlbum(), piste.getnumPiste());
-			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("film_et_fichier_sont_relies");
+			Savepoint fichierContenu = BdClass.getConnection().setSavepoint("piste_et_fichier_sont_relies");
+			inssererFlux(idFichier);
+			BdClass.getConnection().commit();
+			System.out.println("piste et fichiers et flux associés ont été crée ");
 		}
 	
 		/*
@@ -204,7 +276,8 @@ public class Fichier {
 			if (!resultat.next()){ throw new SQLException("we reached the limits");} 
 			int idFichier= resultat.getInt("NEXTVAL");
 
-			statement = BdClass.getConnection().prepareStatement("INSERT INTO Fichier (idFichier, DateFichier, tailleFichier, Email) values(?,sysdate,?,?)");
+			statement = BdClass.getConnection().prepareStatement(
+					"INSERT INTO Fichier (idFichier, DateFichier, tailleFichier, Email) values(?,sysdate,?,?)");
 			statement.setInt(1, idFichier);
 			statement.setFloat(2, tailleFichier);
 			statement.setString(3, User.getEmail());
@@ -212,10 +285,8 @@ public class Fichier {
 			return idFichier;
 		}
 		
-	
-		
-		
-		private static void contenuMultimedia(int idFichier, String Titre, int anneeSortie,int IdAlbum, int numPiste ) throws SQLException {// ne pas utiliser avant de verifier que le film ou l'album existent bien
+		private static void contenuMultimedia(int idFichier, String Titre, int anneeSortie,int IdAlbum, int numPiste ) 
+			throws SQLException {// ne pas utiliser avant de verifier que le film ou l'album existent bien
 			PreparedStatement statement = BdClass.getConnection().prepareStatement(
 					"INSERT INTO ContenuMultimedia (idFichier, Titre, AnneeSortie,IdAlbum ,NumPiste ) values(?,?,?,?,?)");
 			statement.setInt(1, idFichier);

@@ -12,7 +12,7 @@ public class CategorisationFilm {
 	/** Permet de savoir si la categorisation est deja faite **/
 	public static boolean CategorisationFilmExist(String titre, int anneeSortie, String c) throws SQLException{
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
-				"Select * From CategorisationFilm where Titre = ?  and anneeSortie = ? and c = ? ");
+				"Select * From CategorisationFilm where Titre = ?  and anneeSortie = ? and categorie = ? ");
 
 		statement.setString(1, titre);
 		statement.setInt(2, anneeSortie);
@@ -36,6 +36,8 @@ public class CategorisationFilm {
 		try{
 			return associerFilmCateg(titre, anneeSortie, categorie, enCascade);
 		} catch (SQLException e){
+			System.out.println("la catégorisation n'est pas faite");
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -44,12 +46,17 @@ public class CategorisationFilm {
 	public static boolean associerFilmCateg(String titre, int anneeSortie, String categorie, boolean enCascade) 
 		throws SQLException {
 			boolean existe = ElementsExiste(titre, anneeSortie, categorie);
-			boolean assoExistant = CategorisationFilmExist(titre, anneeSortie, categorie);
-			if (existe && !assoExistant) {
-				ajouterCategFilm(titre, anneeSortie, categorie, enCascade);
-				return true;
+			if (!existe){
+				System.out.println("le film ou la catégorie n'existe pas");
+				return false;
 			}
-			return false;
+			boolean assoExistant = CategorisationFilmExist(titre, anneeSortie, categorie);
+			if (assoExistant){
+				System.out.println("le film appartient déjà à cette catégorie");
+				return false;
+			}
+			ajouterCategFilm(titre, anneeSortie, categorie, enCascade);
+			return true;
 	}
 	
 	/** Permet d'ajouter la categorisation **/

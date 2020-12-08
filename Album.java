@@ -142,7 +142,7 @@ public class Album {
 				String reponse = Klex.scanner.nextLine();
 				switch (reponse){
 					case "P":
-						Piste.readInfoPiste(idAlbum);
+						Piste.readInfoPiste(idAlbum , null, true);
 						break;
 					case "T":
 						return;
@@ -226,12 +226,12 @@ public class Album {
 	}
 	
 	/** Supression des albums qui ne sont pas references par d'autre contenus **/
-	public static void nettoyageAlbum(){
+	public static void nettoyageAlbum() throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 				"SELECT IdAlbum FROM Album where IdAlbum NOT IN (SELECT IdAlbum FROM ContributionPiste)");
 		ResultSet result = s.executeQuery();
 		while(result.next()){
-			int idAlbumSuppr = result.getString("IdAlbum"); 
+			int idAlbumSuppr = result.getInt("IdAlbum"); 
 			PreparedStatement statementSuppr = BdClass.getConnection().prepareStatement(
 					"DELETE FROM Album WHERE IdAlbum = ?");
 			statementSuppr.setInt(1, idAlbumSuppr);

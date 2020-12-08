@@ -1,6 +1,7 @@
 
 import java.sql.SQLException;
 import java.util.Scanner;
+
 import except.EmailAlreadyExistsException;
 import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
@@ -19,9 +20,8 @@ public class Klex {
 	    //Scanner scanner = new Scanner(System.in);
 	    
     	System.out.println("bienvenue sur Klex");
-
-	    
-	    scanner.close();
+	   	boucleNonConnecte(); 
+		scanner.close();
 	    try {
 			BdClass.closeConnection();
 		} catch (SQLException e) {
@@ -89,9 +89,6 @@ public class Klex {
 				}
 	    		break;
 
-			
-				
-							
 			case "exit":
 	    		continuer = false;
 	    		break;
@@ -110,9 +107,6 @@ public class Klex {
 	    
 	    	System.out.println("tappez aide pour voir les commandes disponibles");
 	    	
-			
-			
-
 	    	commande = scanner.nextLine();
 	    	switch(commande) {
 	    	case "aide":
@@ -186,9 +180,10 @@ public class Klex {
 				}
 				break;
 
-
+			case "ajout_artiste":
+				Artist.readArtistInfo();
 			case "ajout_piste":
-				Piste.readInfoPiste(1);
+				Piste.readInfoPiste(true);
 				break;				
 			case "ajout_filtre":
 				System.out.println("choisissez le type de filtre langue |langueSousTitre | categorie");
@@ -230,7 +225,7 @@ public class Klex {
 				break;
 				
 			case "supprimer_piste":
-				Piste.readInfoPiste(0);
+				Piste.readInfoPiste(false);
 				break;
 				
 			case "exit":

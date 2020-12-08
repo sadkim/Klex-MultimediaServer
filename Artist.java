@@ -103,8 +103,16 @@ public class Artist {
 
 		/* Commit si et seulement si l'insertion est faite depuis la classe Klex */
 		if (!enCascade){
-			Confirmation.confirmerSansCascade("Voulez vous confirmer la création de l'artiste? ");
+			Confirmation.confirmerSansCascade("Voulez vous confirmer la création de l'artiste? [Y/N]");
 		}
+		/* Proposer la contribution */
+		System.out.println("Vous pouvez maintenant ajouter une contribution dans une piste ou un film");
+		System.out.println("Tapez contribution si oui");
+		System.out.println("Tapez autre chose pour terminer");
+		String commande = Klex.scanner.nextLine();
+		if (commande.equals("contribution")){
+			ContributionArtiste.contributionsEnCascade(getNumArtiste(nomArtiste));
+		}	
 	}
 	
 	/** Permet de savoir si l'artiste existe deja dans la base de donnees */
@@ -155,12 +163,12 @@ public class Artist {
 	}
 	
 	/** Supression des artistes qui ne sont pas references par d'autre contenus **/
-	public static void nettoyageArtiste(){
+	public static void nettoyageArtiste() throws SQLException{
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 				"SELECT NumArtiste FROM ARTIST where NumArtiste NOT IN (SELECT NumArtiste FROM ContributionPiste UNION SELECT NumArtiste FROM ContributionFilm)");
 		ResultSet result = s.executeQuery();
 		while(result.next()){
-			int numArtisteSuppr = result.getString("NumArtiste"); 
+			int numArtisteSuppr = result.getInt("NumArtiste"); 
 			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
 					"DELETE FROM ARTIST WHERE numArtiste = ?");
 			statementSupprRole.setInt(1, numArtisteSuppr);
