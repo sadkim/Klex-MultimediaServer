@@ -102,59 +102,41 @@ public class Film {
 		}
 		else {
 			filmToDb(titre, anneeSortie, Resume, ageMin, urlAffiche);
-<<<<<<< HEAD
-			System.out.println("à chaque film doit être associée au moins un fichieri");
-			boolean continu = true;
-			boolean ajoutFini = false;
-			while (!ajoutFini || continu){
-				System.out.println("ajouter un fichier en tappant ajouteFichier");
-				System.out.println("ou bien annulez la création du film en tappant annuler");
-				System.out.println("taper autre chose pour terminer");
+			String message ="à chaque film doit être associée au moins un fichier ajouter un fichier en tappant ajouteFichier" + 
+							"ou bien annulez en tappant annuler ";
 			
-				String commande = Klex.scanner.nextLine();
-=======
-			
-			
-			String message ="à chaque film doit être associée au moins un fichier ajouter un fichier en tappant ajouteFichier ou bien annulez la création en tappant autre chose";
 			boolean continu = true;
 			boolean contrainteSatis = false;
 			while(continu || !contrainteSatis) {
 				System.out.println(message);
 				String commande = Klex.scanner.nextLine();
-
->>>>>>> 5db81cea8c5d307f9d323668271a266eee8df693
 				if(commande.equals("ajouteFichier")) {
     				System.out.println("quelle est la taille de votre fichier");
     				float taille = Float.parseFloat(Klex.scanner.nextLine());
     				try {
     					Fichier.addFichier(taille, new Film(titre, anneeSortie));
     					contrainteSatis = true;
-    					message = "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier tappez ajouteFichier, tappez n'importe quoi pour quitter";
+    					message = "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier" + 
+									"tappez [ajouteFichier], tappez n'importe quoi pour terminer," + 
+									"ou annuler pour [annuler] la création du film ";
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (FilmDoesNotExistException e) {
     					System.out.println("ce film n'existe pas");
 					}
-<<<<<<< HEAD
     			}else if (commande.equals("annuler")) {
     				BdClass.getConnection().rollback();
     				System.out.println("ajout film annulé");
-=======
     			}
     			else{
     				if(!contrainteSatis) {
-        				BdClass.getConnection().rollback();
-    					System.out.println("ajout film annulé");
+						System.out.println("Vous devez au moins ajouter un fichier");
     				}else {
     					System.out.println("vos inssertions ont bien été sauvegardés");
     				}
->>>>>>> 5db81cea8c5d307f9d323668271a266eee8df693
 					return;
     			}
-				else{
-					BdClass.getConnection().commit(); // pour etre sure 
-					ajoutFini = true;
-				}
+				BdClass.getConnection().commit(); // pour etre sure 
 			}
 			/* Proposer l'ajout des contributeurs */
 			System.out.println("Tapez contribution si vous voulez déclarer un artiste comme contributeur[artiste déjà existant]");
@@ -167,7 +149,8 @@ public class Film {
 	}
 
 
-	private static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche,int idFichier) throws SQLException, FilmAlreadyExistException {
+	private static void addFilm(String titre, int anneeSortie, String Resume, int ageMin, String urlAffiche,int idFichier) 
+		throws SQLException, FilmAlreadyExistException {
 		boolean existe = existeFilm(titre, anneeSortie);
 		if(existe) {
 			throw new FilmAlreadyExistException("ce film existe déja");
@@ -244,7 +227,11 @@ public class Film {
 	
 	
 	public static void searchFilm(String name) throws SQLException {
-		String req = "SELECT Film.titre, Film.anneeSortie FROM Film, Fichier, Flux, Contribution, CategorisationFilm where Film.titre  = categorisationFilm.titre and Film.anneeSortie = categorisationFilm.anneeSortie and Film.titre =ContenuMultimedia.titre and Film.anneeSortie  = contenuMultimedia.anneeSortie and contenuMultimedia.idFichier= Fichier.idFichier and Flux.idFichier = Fichier.idFichier  and Film.titre like '*?*' and ageMin < ? and ";
+		String req = "SELECT Film.titre, Film.anneeSortie FROM Film, Fichier, Flux, Contribution, CategorisationFilm " +
+			"where Film.titre  = categorisationFilm.titre and Film.anneeSortie = categorisationFilm.anneeSortie" + 
+			"and Film.titre =ContenuMultimedia.titre and Film.anneeSortie  = contenuMultimedia.anneeSortie and " + 
+			"contenuMultimedia.idFichier= Fichier.idFichier and Flux.idFichier = Fichier.idFichier  and " + 
+			"Film.titre like '*?*' and ageMin < ? and ";
 		req += "(";
 
 		for(Filtre monFiltre: filtres) {
@@ -318,16 +305,13 @@ public class Film {
 		statement.setNull(4, java.sql.Types.INTEGER);
 		statement.setNull(5, java.sql.Types.INTEGER);
 		statement.executeQuery();
-<<<<<<< HEAD
 	}	
-=======
-	}
-
+	
 	public static void toSupprimeFilm() throws SQLException{
 		System.out.println("Titre du film à supprimer svp");
 		String titre = Klex.scanner.nextLine();
 		System.out.println("L'année de sortie du film à supprimer svp");
-		int anneeSortie = Klex.scanner.nextLine();
+		int anneeSortie = Integer.parseInt(Klex.scanner.nextLine());
 		boolean existe = existeFilm(titre, anneeSortie);
 		if (!existe) {
 			System.out.println("Ce film n'existe pas dans la base de données.");
@@ -342,7 +326,8 @@ public class Film {
 		
 		/** Suppression des fichiers associees au film */
 		PreparedStatement statement1 = BdClass.getConnection().prepareStatement(
-				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.Titre like '*?*' and m.AnneeSortie = ?");
+				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.Titre like '*?*' " +
+				"and m.AnneeSortie = ?");
 		statement1.setString(1, titre);
 		statement1.setInt(2, anneeSortie);
 		ResultSet resultat = statement1.executeQuery();
@@ -416,6 +401,5 @@ public class Film {
 		}
 		return list_ID;
 	}
->>>>>>> 5db81cea8c5d307f9d323668271a266eee8df693
 	
 }
