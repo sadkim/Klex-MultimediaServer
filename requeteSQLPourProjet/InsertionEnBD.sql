@@ -1,33 +1,3 @@
-/* le cache a 100 , Augmenter ? */
-
-/* Creation d'un ensemble de sequence pour contourner le probleme d'auto-increment en sql plus */
-
-CREATE SEQUENCE idArtistSeq
-	START WITH 1
- 	INCREMENT BY 1
- 	CACHE 100;
-
-CREATE SEQUENCE idFichierSeq
- 	START WITH 1
- 	INCREMENT BY 1
- 	CACHE 100;
-
-CREATE SEQUENCE idAlbumSeq
- 	START WITH 1
- 	INCREMENT BY 1
- 	CACHE 100;
-
-
-CREATE SEQUENCE NoFluxSeq
-	START WITH 1
- 	INCREMENT BY 1
- 	CACHE 100;
-
-CREATE SEQUENCE NoPisteSeq
-	START WITH 1
- 	INCREMENT BY 1
- 	CACHE 100;
-
 
 /* Insertion de quelques langues */
 insert into Langue (Langue) values ('français');
