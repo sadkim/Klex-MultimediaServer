@@ -39,11 +39,11 @@ public class Piste {
 	public static void readInfoPiste(Integer idFichier, boolean addDelete){
 		/* Lecture des informations de  l'album */
 		try{
-			System.out.println("le nom de l'artiste ?");
+			System.out.println("le nom de l'artiste principale ou le groupe de l'album ?");
 			String nomArtiste = Klex.scanner.nextLine();
 			Integer numArtiste = Artist.getNumArtiste(nomArtiste);
 			if (numArtiste == null){
-				System.out.println("Cet artiste n'existe pas");
+				System.out.println("Cet artiste/groupe n'existe pas");
 				return;
 			}
 			System.out.println("le titre de l'album ?");
@@ -287,8 +287,8 @@ public class Piste {
 		statementSupprPiste.executeQuery();
 		
 		/** Nettoyage des Artistes et de Album*/
-		Artist.nettoyageArtiste();
 		Album.nettoyageAlbum();
+		Artist.nettoyageArtiste();
 		BdClass.getConnection().commit(); //<<======= ici le commit 
 
 	}
