@@ -85,7 +85,11 @@ public class Film {
 				return new Film(titre, anneeSortie);
 			}
 		}
-		catch (SQLException | FilmDoesNotExistException e) {
+		catch (FilmDoesNotExistException e){
+			System.out.println("Création du film annulé");
+			return null;
+		}
+		catch (SQLException e){
 			e.printStackTrace();
 			return null;
 		}	
@@ -102,8 +106,8 @@ public class Film {
 		}
 		else {
 			filmToDb(titre, anneeSortie, Resume, ageMin, urlAffiche);
-			String message ="à chaque film doit être associée au moins un fichier ajouter un fichier en tappant ajouteFichier" + 
-							"ou bien annulez en tappant annuler ";
+			String message ="à chaque film doit être associée au moins un fichier:\n ajouter un fichier en tappant ajouteFichier"
+				+ "\nannuler la création du film en tappant annuler ";
 			
 			boolean continu = true;
 			boolean contrainteSatis = false;
@@ -117,8 +121,7 @@ public class Film {
     					Fichier.addFichier(taille, new Film(titre, anneeSortie));
     					contrainteSatis = true;
     					message = "Film , Fichiers et flux ont bien été ajoutés si vous voulez ajouter un autre fichier" + 
-									"tappez [ajouteFichier], tappez n'importe quoi pour terminer," + 
-									"ou annuler pour [annuler] la création du film ";
+									"tappez [ajouteFichier], tappez n'importe quoi pour terminer";
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (FilmDoesNotExistException e) {
@@ -127,16 +130,17 @@ public class Film {
     			}else if (commande.equals("annuler")) {
     				BdClass.getConnection().rollback();
     				System.out.println("ajout film annulé");
+					return;
     			}
     			else{
     				if(!contrainteSatis) {
 						System.out.println("Vous devez au moins ajouter un fichier");
     				}else {
     					System.out.println("vos inssertions ont bien été sauvegardés");
-    				}
-					return;
+						BdClass.getConnection().commit(); // pour etre sure 
+    					continu = false;
+					}
     			}
-				BdClass.getConnection().commit(); // pour etre sure 
 			}
 			/* Proposer l'ajout des contributeurs */
 			System.out.println("Tapez contribution si vous voulez déclarer un artiste comme contributeur[artiste déjà existant]");
@@ -187,6 +191,7 @@ public class Film {
 			System.out.println("Tapez Categoriser pour ajouter le film à une categorie existante");
 			System.out.println("Tapez nouvelleCategorie si vous avez besoin de créer une nouvelle catégorie");
 			System.out.println("Tapez fini si vous voulez confirmer la categorisation");
+			CategorieFilm.CategoriesFilmDispo();
 			String commande = Klex.scanner.nextLine();
 			switch (commande) {
 				case "Categoriser":
@@ -326,7 +331,7 @@ public class Film {
 		
 		/** Suppression des fichiers associees au film */
 		PreparedStatement statement1 = BdClass.getConnection().prepareStatement(
-				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.Titre like '*?*' " +
+				"SELECT * FROM Fichier f, ContenuMultimedia m where f.idFichier = m .idFichier and m.Titre = ? " +
 				"and m.AnneeSortie = ?");
 		statement1.setString(1, titre);
 		statement1.setInt(2, anneeSortie);
@@ -341,14 +346,14 @@ public class Film {
 		
 		/** Suppression des roles associees au film */
 		PreparedStatement statement2 = BdClass.getConnection().prepareStatement(
-				"SELECT * FROM ContributionFilm where Titre like '*?*' and AnneeSortie = ?");
+				"SELECT * FROM ContributionFilm where Titre  = ? and AnneeSortie = ?");
 		statement2.setString(1, titre);
 		statement2.setInt(2, anneeSortie);
 		ResultSet resultat1 = statement2.executeQuery();
 		while(resultat1.next()) {
 			int numArtisteSuppr = resultat1.getInt("numArtiste"); 
 			PreparedStatement statementSupprRole = BdClass.getConnection().prepareStatement(
-					"DELETE FROM ContributionFilm WHERE numArtiste = ? and Titre like '*?*' and AnneeSortie = ?");
+					"DELETE FROM ContributionFilm WHERE numArtiste = ? and Titre = ? and AnneeSortie = ?");
 			statementSupprRole.setInt(1, numArtisteSuppr);
 			statementSupprRole.setString(2, titre);
 			statementSupprRole.setInt(3, anneeSortie);
@@ -357,14 +362,13 @@ public class Film {
 		
 		/** Suppression du film */
 		PreparedStatement statementSupprFilm = BdClass.getConnection().prepareStatement(
-				"DELETE FROM Film WHERE titre like ='*?*' and anneeSortie = ?");
+				"DELETE FROM Film WHERE titre = ? and anneeSortie = ?");
 		statementSupprFilm.setString(1, titre);
 		statementSupprFilm.setInt(2, anneeSortie);
 		statementSupprFilm.executeQuery();
 		
-		/** Nettoyage des Artistes et de Album*/
+		/** Nettoyage des Artistes**/
 		Artist.nettoyageArtiste();
-		Album.nettoyageAlbum();
 		BdClass.getConnection().commit(); //<<======= ici le commit 
 	}
 	

@@ -209,16 +209,15 @@ public class Fichier {
 				if(!Codec.codecExist(codec)) {
 					boolean continu = true;
 					while(continu) {
-						System.out.println("codec inexistantant voulais vous ajouter cette langue oui/non" );
+						System.out.println("codec inexistantant voulais vous ajouter ce codec oui/non" );
 		    			String rep =Klex.scanner.nextLine();
 		    			if(rep.equals("oui")) {
 		    				Codec.addCodec(codec, true);
 		    				continu=false;
 		    				repeat = false;
-		    			} else if(rep=="non") {
+		    			} else if(rep.equals("non")) {
 		    				continu = false;
 		    			}
-
 					}
 				}
 				else{
@@ -240,8 +239,17 @@ public class Fichier {
 				}
 			}
 			if(type.equals("audio")){
-				System.out.println("entrez echantillonage" );
-				echantillonage = Integer.parseInt(Klex.scanner.nextLine());
+				System.out.println("entrez echantillonage : 16 , 24, 32" );
+				boolean continu = true;
+				while (continu){
+					echantillonage = Integer.parseInt(Klex.scanner.nextLine());
+					if (echantillonage != 16 && echantillonage != 24 && echantillonage != 32){
+						System.out.println("mauvais réponse, insérer un echantillonage correct");
+					}
+					else{
+						continu = false;
+					}
+				}
 			}
 			Flux.addFlux(type, idFichier, langue, codec, debit, resLargeurVid, resHauteurVid, echantillonage);
 		}

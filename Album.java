@@ -96,6 +96,7 @@ public class Album {
 				System.out.println("Tapez nouvelleCategorie si vous avez besoin de créer une nouvelle catégorie");
 				System.out.println("Tapez annuler pour annuler la création de l'album");
 				System.out.println("Tapez fini si vous avez voulez confirmer la creation de l'album");
+				CategorieMusique.CategoriesMusiqueDispo();
 				
 				String commande = Klex.scanner.nextLine();
 				switch (commande) {
@@ -225,10 +226,10 @@ public class Album {
 		return null;
 	}
 	
-	/** Supression des albums qui ne sont pas references par d'autre contenus **/
+	/** Supression des albums qui ne sont pas references par d'autre contenus : qui ne sont pas reference par pistes**/
 	public static void nettoyageAlbum() throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
-				"SELECT IdAlbum FROM Album where IdAlbum NOT IN (SELECT IdAlbum FROM ContributionPiste)");
+				"SELECT IdAlbum FROM Album where IdAlbum NOT IN (SELECT IdAlbum FROM Pistes)");
 		ResultSet result = s.executeQuery();
 		while(result.next()){
 			int idAlbumSuppr = result.getInt("IdAlbum"); 

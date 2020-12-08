@@ -127,7 +127,7 @@ public class Piste {
 			System.out.println("Tapez Categoriser pour associer la piste à une categorie existante");
 			System.out.println("Tapez nouvelleCategorie si vous avez besoin de créer une nouvelle catégorie");
 			System.out.println("Tapez fini si vous avez voulez avez fini la catégorisation de la piste");
-				
+			CategorieMusique.CategoriesMusiqueDispo();
 			String commande = Klex.scanner.nextLine();
 			switch (commande) {
 				case "Categoriser":

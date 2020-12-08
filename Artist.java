@@ -102,10 +102,12 @@ public class Artist {
 		statement.executeQuery();
 
 		/* Commit si et seulement si l'insertion est faite depuis la classe Klex */
+		boolean ajoute = true;
 		if (!enCascade){
-			Confirmation.confirmerSansCascade("Voulez vous confirmer la création de l'artiste? [Y/N]");
+			ajoute = Confirmation.confirmerSansCascade("Voulez vous confirmer la création de l'artiste? [Y/N]");
 		}
 		/* Proposer la contribution */
+		if (!ajoute){ return;}
 		System.out.println("Vous pouvez maintenant ajouter une contribution dans une piste ou un film");
 		System.out.println("Tapez contribution si oui");
 		System.out.println("Tapez autre chose pour terminer");
@@ -162,10 +164,12 @@ public class Artist {
 		return null;
 	}
 	
-	/** Supression des artistes qui ne sont pas references par d'autre contenus **/
-	public static void nettoyageArtiste() throws SQLException{
+	/** Supression des artistes qui ne sont pas references par d'autre contenus *
+	 * On ne supprime pas les artistes qui ont des intervention ou sont des artistes principales dans des albums */
+	public static void nettoyageArtiste() throws SQLException{  
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
-				"SELECT NumArtiste FROM ARTIST where NumArtiste NOT IN (SELECT NumArtiste FROM ContributionPiste UNION SELECT NumArtiste FROM ContributionFilm)");
+				"SELECT NumArtiste FROM ARTIST where NumArtiste NOT IN (SELECT NumArtiste FROM ContributionPiste" + 
+				"UNION SELECT NumArtiste FROM ContributionFilm  UNION SELECT NumArtiste FROM Album )");
 		ResultSet result = s.executeQuery();
 		while(result.next()){
 			int numArtisteSuppr = result.getInt("NumArtiste"); 
