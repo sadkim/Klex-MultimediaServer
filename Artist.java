@@ -7,12 +7,15 @@ import java.text.ParseException;
 
 public class Artist {
 			
-	/** A appeler directement si on veut creer un artiste **/
+	/** méthode à appeler directement si on veut créer un artiste depuis l'interface Klex **/
 	public static void readArtistInfo() {
 		readArtistInfo(false);
 	}
 	
-	/** Permet de créer un artiste depuis album ou film : insertion sans commit si enCascade est true **/
+	/** 
+	 * Permet de créer un artiste depuis album ou film : insertion sans commit si enCascade est true 
+	 * @param enCascade un boolean indiquant si la lecture est faite depuis Klex ou pendant une autre création (de film/piste)
+	 */
 	public static void readArtistInfo(boolean enCascade) {
 	
 		System.out.println("le nom de l'artiste svp");
@@ -70,6 +73,16 @@ public class Artist {
 		}	
 	}
 
+	/**
+	 * Permet d'insérer les données d'un artiste dans la base de donnée
+	 * @param nomArtiste
+	 * @param urlPhotoArtiste 
+	 * @param specialiteP la spécialité principale de l'artiste 
+	 * @param biographie 
+	 * @param dateNaissance 
+	 * @param enCascade un boolean indiquant si l'ajout de l'artiste est fait depuis l'interface ou pendant la création d'un 
+	 * film ou une piste 
+	 */
 	public static void addArtist(String nomArtiste, String urlPhotoArtiste,String specialiteP, String biographie,
 			Date dateNaissance, boolean enCascade) throws SQLException {
 		
@@ -138,8 +151,10 @@ public class Artist {
 		return resultat.next();	
 	}
 		
-	/** Permet de savoir si un artiste existe deja avec le meme nom **/
-
+	/** Permet de savoir si un artiste existe deja avec le meme nom
+	 * @param nomArtiste 
+	 * @return un boolean indiquant si l'artiste existe ou pas
+	 */
 	public static boolean ArtisteExiste(String nomArtiste) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ARTIST where nomArtiste = ?");
 		statement.setString(1, nomArtiste);
@@ -147,8 +162,10 @@ public class Artist {
 		return resultat.next();	
 	}
 	
-	/** Donne l'identifiant de l'artiste a partir de son nom : pas de fiabilite **/
-
+	/** Donne l'identifiant de l'artiste a partir de son nom 
+	 * @param nomArtiste
+	 * @return un Integer qui est égal à l'identifiant de l'artiste s'il existe ou un null sinon
+	 */
 	public static Integer getNumArtiste(String nomArtiste) throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement("SELECT NumArtiste FROM ARTIST where nomArtiste = ?");
 		s.setString(1, nomArtiste);
@@ -159,7 +176,10 @@ public class Artist {
 		return null;
 	}
 	
-	/** Donne le nom de l'artiste à partir de son identifiant **/
+	/** Donne le nom de l'artiste à partir de son identifiant
+	 * @param numArtiste l'identifiant de l'artiste 
+	 * @return le nom de l'artiste 
+	 */
 	public static String getNomArtiste(int numArtiste) throws SQLException{
 		PreparedStatement s = BdClass.getConnection().prepareStatement("SELECT NomArtiste FROM ARTIST where NumArtiste = ?");
 		s.setInt(1, numArtiste);
@@ -167,7 +187,7 @@ public class Artist {
 		return null;
 	}
 	
-	/** Supression des artistes qui ne sont pas references par d'autre contenus *
+	/** Supression des artistes qui ne sont pas references par d'autre contenus,
 	 * On ne supprime pas les artistes qui ont des intervention ou sont des artistes principales dans des albums */
 	public static void nettoyageArtiste() throws SQLException{  
 		PreparedStatement s = BdClass.getConnection().prepareStatement(

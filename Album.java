@@ -10,18 +10,24 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe permettant de manipuler les albums 
+ */
 public class Album {
 	
 	private static List<Filtre> filtres = new ArrayList<Filtre>();
 	
+	/** Permet d'ajouter les filtres de recherches */
 	public static void addFilter(Filtre filtre) {
 		Album.filtres.add(filtre);
 	}
 	
+	/** Permet de supprimer les filtres de recherches */
 	public static void deleteFilters() {
 		Album.filtres.clear();
 	}
 	
+	/** Permet de lire depuis l'interface les données nécessaires pour créer un album **/
 	public static void readInfoAlbum () {
 		System.out.println("Nom du album?");
 		String titre = Klex.scanner.nextLine();
@@ -57,6 +63,7 @@ public class Album {
 		}	
 	}
 	
+	/** Permet d'ajouter l'album dans la base de donnée **/
 	public static void addAlbum (String titre, String Artiste, Date dateSortie, String URL) throws SQLException {
 		
 		if (!Artist.ArtisteExiste(Artiste)){
@@ -167,6 +174,10 @@ public class Album {
 		}
 	}
 	
+	/** Permet de chercher un album dans la base de donnée 
+	 * @param titre le titre de l'album
+	 * @param numArtiste l'identifiant de l'artiste ou le groupe principale 
+	 */
 	public static void searchAlbum (String titre, int numArtiste) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 				"SELECT * FROM ALBUM where TitreAlbum = ? and NumArtiste = ?");
@@ -178,8 +189,11 @@ public class Album {
 		}
 	}
 	
-	/**Renvoyer le nombre de pistes dans un album
-	 * Renvoyer -1 sinon**/
+	/**Permet de savoir le nombre des pistes dans un album, elle est utilisé pour créer un identifiant de la prochaine piste 
+	 * à créer
+	 * @param idAlbum l'identifiant de l'album 
+	 * @return le nombre de pistes dans un album , Renvoyer -1 sinon
+	 */
 	public static int getNbPiste(int IdAlbum) throws SQLException {
 		if (AlbumExiste(IdAlbum)) {
 			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Pistes where IdAlbum = ?");
@@ -194,8 +208,10 @@ public class Album {
 		return -1;
 	}
 	
-	/**Renvoyer true si un tel album existe**/
-	/**Tester l'existence d'un album à partir de son Identifiant**/
+	/**Permet de vérifier si un album existe ou pas 
+	 * @param idAlbum l'identifiant de l'album 
+	 * @return  un boolean indiquant si un tel album existe
+	 */
 	public static boolean AlbumExiste(int IdAlbum) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM ALBUM where IdAlbum = ?");
 		statement.setInt(1, IdAlbum);
@@ -206,6 +222,10 @@ public class Album {
 		return false;
 	}
 
+	/** Permet de trouver l'identifiant d'un album depuis ses données, on a besoin de cette méthode
+	 * car les identifiants sont manipulés par la base de donnée à travers des séquences 
+	 * @return un Integer qui est soint l'identifiant de l'album soit null si l'album n'existe pas 
+	 */
 	public static Integer trouveIdentifiant(String titre, int numArtiste, Date dateSortie, String URL) throws SQLException {
 		
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
@@ -225,6 +245,10 @@ public class Album {
 		
 	}
 	
+	/** Permet de trouver l'identifiant d'un album depuis son titre et son artiste principale c'est pas fiable mais 
+	 * on l'admet 
+	 * @return un Integer qui est soit l'identifiant de l'album soit null si l'album n'existe pas
+	 */
 	public static Integer trouveIdentifiant(String titre, int numArtiste) throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement(
 			"SELECT idALbum from Album WHERE TitreAlbum = ? and  NumArtiste = ?");
@@ -239,7 +263,7 @@ public class Album {
 		return null;
 	}
 	
-	/** Supression des albums qui ne sont pas references par d'autre contenus : qui ne sont pas reference par pistes**/
+	/** Supression des albums qui ne sont pas references par d'autre contenus : qui ne sont pas referencés par pistes**/
 	public static void nettoyageAlbum() throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement(
 				"SELECT IdAlbum FROM Album where IdAlbum NOT IN (SELECT IdAlbum FROM Pistes)");
@@ -253,6 +277,10 @@ public class Album {
 		}
 	}
 	
+	/** Permet d'effectuer des recherches des albums filtrés dans la base selon la critère des catégories 
+	 * @param name : une chaine de caractere qui indique le nom de l'album recherché ou une chaîne vide si on veut faire
+	 * une recherche globale
+	 */
 	public static void rechercheFiltreAlbum(String name) throws SQLException { 
 		
 		String req = "SELECT Album.titreAlbum , Album.dateSortieAlbum , Artist.nomArtiste " +

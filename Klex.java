@@ -480,6 +480,9 @@ public class Klex {
 	    			}
 					try {
 	    				Flux.addFlux(type,idFichier,fluxLang,codec,debit,resLargeurVid,resHauteurVid,echantillonage);
+						BdClass.getConnection().commit(); //C'est pas bon mais l'ajout a basoin de plusieurs modifs, 
+														  // On ne comit pas dans Flux, pour laisser le choix d'annulations
+														  // pendant la création des pistes, fichier, et films
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
