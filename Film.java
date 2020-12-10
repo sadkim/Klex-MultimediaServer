@@ -232,7 +232,7 @@ public class Film {
 		while (!ajoutFini || !contrainteSatis){
 			System.out.println(message);
 			System.out.println("Tapez associer pour associer à un acteur déja existant");
-			System.out.println("Tapez nouveau artiste si vous avez besoin de créer un nouvel artist");
+			System.out.println("Tapez nouveau si vous avez besoin de créer un nouvel artist");
 			String commande = Klex.scanner.nextLine();
 			switch (commande) {
 				case "associer":					

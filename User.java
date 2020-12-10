@@ -66,6 +66,10 @@ public class User {
 			statement.setString(6, languePrefere);
 			resultat = statement.executeQuery();
 			BdClass.getConnection().commit();
+			/* Juste pour contourner pour le moment */
+			statement = BdClass.getConnection().prepareStatement("SELECT * FROM Utilisateur where email = ?");
+			statement.setString(1, email);
+			resultat = statement.executeQuery();
 			resultat.next();
 			initialiseAtribut(resultat);
 		}
@@ -113,6 +117,8 @@ public class User {
 			User.prenom=null;
 			
 		}
+
+	
 public static List<Integer> mesFichiers() throws SQLException {
 	List<Integer> list_ID = new ArrayList<Integer>();
 	PreparedStatement statement = BdClass.getConnection().prepareCall(""

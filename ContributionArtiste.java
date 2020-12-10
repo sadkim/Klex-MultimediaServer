@@ -156,7 +156,7 @@ public class ContributionArtiste {
 			commande = Klex.scanner.nextLine();
 			switch (commande){
 				case "artiste" : 
-					readContribPiste(idAlbum , numPiste);
+					ajoute = ajoute || readContribPiste(idAlbum , numPiste);
 					break;
 				case "terminer":
 					termine = true;

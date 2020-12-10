@@ -517,7 +517,6 @@ public class Klex {
 		System.out.println("tapez ajout_film si vous voulez ajouter un nouveau film");
 		System.out.println("tapez ajout_contrib si vous voulez ajouter la contribution d'un artiste dans un film/piste");
 		System.out.println("tapez ajout_logiciel si vous voulez ajouter un nouveau logiciel");
-		System.out.println("tapez ajout_filtre si vous voulez faire un recherche filtré");	
 		System.out.println("Tapez exit pour quitter la rubrique");
 	}
 
