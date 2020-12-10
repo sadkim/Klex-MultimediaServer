@@ -66,6 +66,7 @@ public class User {
 			statement.setString(6, languePrefere);
 			resultat = statement.executeQuery();
 			BdClass.getConnection().commit();
+			resultat.next();
 			initialiseAtribut(resultat);
 		}
 		
