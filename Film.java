@@ -182,6 +182,7 @@ public class Film {
 		statement.executeQuery();
 		
 		categiserFIlm(titre, anneeSortie);
+		ajoutArtiste(titre,anneeSortie);
 	}
 
 	private static void categiserFIlm(String titre, int anneeSortie) throws SQLException {
@@ -230,6 +231,35 @@ public class Film {
 		}
 	}
 	
+	private static void ajoutArtiste(String titre, int anneeSortie) throws SQLException {
+		System.out.println("Un film doit avoir au moins une categorie ajoutez les");
+		boolean contrainteSatis = false;
+		boolean categorisationFini = false;
+		String message="un film doit être associer à au moins un artiste";
+		while (!categorisationFini || !contrainteSatis){
+			System.out.println(message);
+			System.out.println("Tapez associer pour associer à un acteur déja existant");
+			System.out.println("Tapez nouveau artiste si vous avez besoin de créer un nouvel artist");
+			CategorieFilm.CategoriesFilmDispo();
+			String commande = Klex.scanner.nextLine();
+			switch (commande) {
+				case "associer":					
+					ContributionArtiste.contributionsEnCascade(titre, anneeSortie);
+					Savepoint artisteFilm = BdClass.getConnection().setSavepoint("artistFilm");
+					contrainteSatis = true;
+					break;
+
+				case "nouveau":
+					Artist.readArtistInfo(false);
+					break;
+			
+				default :
+					categorisationFini = true;
+					break;
+					
+			}
+		}
+	}
 	
 	public static void searchFilm(String name) throws SQLException { 
 		String req = "SELECT Distinct Film.titre, Film.anneeSortie , Film.resume, Film.urlAffiche  " +
