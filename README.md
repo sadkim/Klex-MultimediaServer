@@ -11,5 +11,11 @@
 - Ryan Liing Pang Tee
 
 # Guide :
-- la fonction main est dans la classe Klex.java
-- le dossier requeteSQLPourProjet contient les réponses de la partie sql du projet : une version corrigée et vérifiée de ce qui en google doc 
+- le dossier codeJavaKlex contient le script de l'application JAVA:
+	- la fonction main est dans la classe Klex.java
+	- Vous pouvez lancer l'interface sur le terminal avec les commandes :
+			-make 
+			-make exeKlex
+
+- le dossier requeteSQLPourProjet le script SQL pour concevoir la base, insérer des données, faire des selections ainsi que
+	des suppressions
