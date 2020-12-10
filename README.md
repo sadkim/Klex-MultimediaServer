@@ -11,4 +11,5 @@
 - Ryan Liing Pang Tee
 
 # Guide :
+- la fonction main est dans la classe Klex.java
 - le dossier requeteSQLPourProjet contient les réponses de la partie sql du projet : une version corrigée et vérifiée de ce qui en google doc 
