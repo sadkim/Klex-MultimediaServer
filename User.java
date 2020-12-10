@@ -56,7 +56,8 @@ public class User {
 			    scanner.close();
 
 			}
-			statement = BdClass.getConnection().prepareStatement("INSERT INTO Utilisateur (email, nom, prenom, age, codeAccess, LanguePREFERE) values(?,?,?,?,?,?)");
+			statement = BdClass.getConnection().prepareStatement(
+					"INSERT INTO Utilisateur (email, nom, prenom, age, codeAccess, LanguePREFERE) values(?,?,?,?,?,?)");
 			statement.setString(1, email);
 			statement.setString(2, nom);
 			statement.setString(3, prenom);
