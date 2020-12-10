@@ -52,6 +52,7 @@ insert into Fichier(idFichier, DateFichier, TailleFichier, Email) values (idFich
 insert into Fichier(idFichier, DateFichier, TailleFichier, Email) values (idFichierSeq.nextval, 
 		TO_DATE('2020-12-04','YYYY-MM-DD'), 50000, 'henry.cool@gmail.com');
 
+
 /* Inserer les codecs et les flux pour les fichiers de cet utilisateur correspondant a ces films */
 
 /*Codec : */
@@ -124,7 +125,7 @@ insert into Utilisateur(Email, CodeAccess, Nom, Prenom, Age, LanguePrefere) valu
 /* Ajouter un album avec des pistes */
 
 insert into Album(idAlbum, TitreAlbum, NumArtiste, DateSortieAlbum, URLimgPochette) values(
-		idAlbumSeq.nextval, 'Tresspassing' , 1, TO_DATE('2012-05-15', 'YYYY-MM-DD'), 'https:/tresspassing.jpeg'); 
+		idAlbumSeq.nextval, 'Tresspassing' , 3, TO_DATE('2012-05-15', 'YYYY-MM-DD'), 'https:/tresspassing.jpeg'); 
 
 /* Ajouter des categories musique et categoriser cet album */
 		

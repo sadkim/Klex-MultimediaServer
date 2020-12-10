@@ -212,7 +212,7 @@ CREATE TABLE ContenuMultimedia (
 		ON DELETE CASCADE,
 		constraint ContenuDuFichier CHECK((Titre = NULL AND AnneeSortie = NULL AND idFichier != NULL AND IdAlbum != NULL) 
                 OR (idAlbum = NULL  AND NumPiste = NULL AND Titre != NULL AND AnneeSortie != NULL))
-)
+);
 
 /* Creation d'un ensemble de sequence pour contourner le probleme d'auto-increment en sql plus */
 
