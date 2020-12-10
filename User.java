@@ -1,6 +1,8 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import except.EmailAlreadyExistsException;
@@ -108,5 +110,16 @@ public class User {
 			User.nom=null;
 			User.prenom=null;
 			
+		}
+public static List<Integer> mesFichiers() throws SQLException {
+	List<Integer> list_ID = new ArrayList<Integer>();
+	PreparedStatement statement = BdClass.getConnection().prepareCall(""
+			+ "SELECT * FROM ContenuMultimedia WHERE email = ?");
+	statement.setString(1, User.email);
+	ResultSet resultat = statement.executeQuery();
+	while (resultat.next()) {
+		list_ID.add(resultat.getInt("idFichier"));
+	}
+	return list_ID;
 		}
 }
