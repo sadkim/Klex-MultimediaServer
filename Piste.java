@@ -204,16 +204,38 @@ public class Piste {
     	}
 		/* Faire la commit de la piste */
 		BdClass.getConnection().commit();
-		/* Proposer l'ajout des contributeurs */
-		System.out.println("Tapez contribution si vous voulez déclarer un artiste comme contributeur[artiste déjà existant]");
-		System.out.println("Tapez autre chose pour terminer");
-		String commande = Klex.scanner.nextLine();
-		if (commande.equals("contribution")){
-			ContributionArtiste.contributionsEnCascade(IdAlbum , nbPiste + 1);
-		}
+		ajoutArtiste(IdAlbum, nbPiste + 1);
 		return nbPiste + 1;
 	}
-	
+
+
+	private static void ajoutArtiste(int idAlbum, int numPiste) throws SQLException {
+		boolean contrainteSatis = false;
+		boolean ajoutFini = false;
+		String message="une piste doit être associer à au moins un artiste , ajoutez le ";
+		while (!ajoutFini || !contrainteSatis){
+			System.out.println(message);
+			System.out.println("Tapez associer pour associer à un acteur déja existant");
+			System.out.println("Tapez nouveau artiste si vous avez besoin de créer un nouvel artist");
+			String commande = Klex.scanner.nextLine();
+			switch (commande) {
+				case "associer":					
+					contrainteSatis = contrainteSatis || ContributionArtiste.contributionsEnCascade(idAlbum, numPiste);
+					Savepoint artisteFilm = BdClass.getConnection().setSavepoint("artistFilm");
+					break;
+
+				case "nouveau":
+					Artist.readArtistInfo(false);
+					break;
+			
+				default :
+					message = "vous de devez associer au moins un artiste";
+					ajoutFini = true;
+					break;	
+			}
+		}
+	}
+
 	/**Test l'existence d'une piste.
 	 * @throws SQLException **/
 	public static boolean PisteExiste(int IdAlbum, int numPiste) throws SQLException {

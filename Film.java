@@ -142,14 +142,7 @@ public class Film {
 					}
     			}
 			}
-			/* Proposer l'ajout des contributeurs */
-			//TODO avant commit et avec obligation et repetition
-			System.out.println("Tapez contribution si vous voulez déclarer un artiste comme contributeur[artiste déjà existant]");
-			System.out.println("Tapez autre chose pour terminer");
-			String commande = Klex.scanner.nextLine();
-			if (commande.equals("contribution")){
-				ContributionArtiste.contributionsEnCascade(titre, anneeSortie);
-			}
+			
 		}
 	}
 
@@ -182,6 +175,7 @@ public class Film {
 		statement.executeQuery();
 		
 		categiserFIlm(titre, anneeSortie);
+		/* Un ajout des interventions qui est force */
 		ajoutArtiste(titre,anneeSortie);
 	}
 
@@ -232,21 +226,18 @@ public class Film {
 	}
 	
 	private static void ajoutArtiste(String titre, int anneeSortie) throws SQLException {
-		System.out.println("Un film doit avoir au moins une categorie ajoutez les");
 		boolean contrainteSatis = false;
-		boolean categorisationFini = false;
-		String message="un film doit être associer à au moins un artiste";
-		while (!categorisationFini || !contrainteSatis){
+		boolean ajoutFini = false;
+		String message="un film doit être associer à au moins un artiste, ajoutez le";
+		while (!ajoutFini || !contrainteSatis){
 			System.out.println(message);
 			System.out.println("Tapez associer pour associer à un acteur déja existant");
 			System.out.println("Tapez nouveau artiste si vous avez besoin de créer un nouvel artist");
-			CategorieFilm.CategoriesFilmDispo();
 			String commande = Klex.scanner.nextLine();
 			switch (commande) {
 				case "associer":					
-					ContributionArtiste.contributionsEnCascade(titre, anneeSortie);
+					contrainteSatis = contrainteSatis || ContributionArtiste.contributionsEnCascade(titre, anneeSortie);
 					Savepoint artisteFilm = BdClass.getConnection().setSavepoint("artistFilm");
-					contrainteSatis = true;
 					break;
 
 				case "nouveau":
@@ -254,9 +245,11 @@ public class Film {
 					break;
 			
 				default :
-					categorisationFini = true;
-					break;
-					
+					if (!ajoutFini){
+						message = "vous de devez associer au moins un artiste";
+					}
+					ajoutFini = true;
+					break;	
 			}
 		}
 	}
