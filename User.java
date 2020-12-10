@@ -17,7 +17,8 @@ public class User {
 		
 		
 		public User(String email,String codeAcces) throws NoSuchUserException, SQLException  {
-			PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Utilisateur where email = ? and codeAccess = ?");
+			PreparedStatement statement = BdClass.getConnection().prepareStatement(
+					"SELECT * FROM Utilisateur where email = ? and codeAccess = ?");
 			statement.setString(1, email);
 			statement.setString(2, codeAcces);
 			ResultSet resultat =statement.executeQuery();

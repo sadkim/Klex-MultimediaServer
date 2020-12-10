@@ -7,7 +7,7 @@ import except.FilmAlreadyExistException;
 import except.FilmDoesNotExistException;
 import except.NoSuchUserException;
 
-
+/** La classe pricipale qui lance l'interface **/
 public class Klex {
 
 	public static Scanner scanner = new Scanner(System.in);
@@ -31,6 +31,7 @@ public class Klex {
 
 	}
 	
+	/** Choix donne a un utilsateur non connecte ou non inscrit **/
 	private static void boucleNonConnecte() {
 		String commande;
 	    boolean continuer= true;
@@ -98,7 +99,7 @@ public class Klex {
 		
 	}
 
-
+	/** Choix des commandes lances apres la connection de l'utilisateur **/
 	private static void boucleConnecte() throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -133,7 +134,8 @@ public class Klex {
 				break;
 
 			case "modifier":
-				modifierBase();
+				System.out.println("Nous sommes désolés, cette rubrique est en cours de developpement");
+				//modifierBase();
 				break;
 		
 			case "exit":
@@ -146,6 +148,7 @@ public class Klex {
 		}
 	}
 	
+	/** Permet l'utilisateur de lancer des commandes d'ajout des contenus dans la base **/
 	private static void ajoutContenus() throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -213,6 +216,7 @@ public class Klex {
 		}
 	}
 		
+	/** Permet d'effectuer une recherche filtree/non filtree des films dans la base de donnee **/
 	private static void chercherFilms()throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -279,6 +283,7 @@ public class Klex {
 				
 	}
 	
+	/** Permet d'effectuer des recherches filtrees/non filtrees dans la base de donnee **/
 	private static void chercherPistes()throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -347,6 +352,7 @@ public class Klex {
 				
 	}
 
+	/** Pour effectuer des recherches filtrees/non filtrees des albums dans la base de donnee **/
 	private static void chercherAlbums() throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -404,6 +410,7 @@ public class Klex {
 		}
 	}
 
+	/** Permet l'utilisateur de supprimer une piste ou un film **/
 	private static void suppressionContenus() throws SQLException {
 		String commande;
 	    boolean continuer= true;
@@ -436,6 +443,7 @@ public class Klex {
 		}
 	}
 	
+	/** Permet de modifier la base : pas completement implemente ni testes **/
 	private static void modifierBase() throws SQLException {
 		String commande;
 	    boolean continuer= true;
