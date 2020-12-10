@@ -3,11 +3,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Piste {
 	
 	private int idAlbum ;
 	private int numPiste;
+	private static List<Filtre> filtres = new ArrayList<Filtre>();
+	
+	public static void addFilter(Filtre filtre) {
+		Piste.filtres.add(filtre);
+	}
+	
+	public static void deleteFilters() {
+		Piste.filtres.clear();
+	}
 	
 	public int getIdAlbum () {
 		return idAlbum ;
@@ -323,4 +334,64 @@ public class Piste {
 			statement.setInt(5, numPiste);
 			statement.executeQuery();
 	}
+	
+	
+	public static void rechercheFiltrePiste(String name) throws SQLException { 
+		
+		String req = "SELECT Distinct Pistes.titrePiste , Pistes.dureePiste , Album.titreAlbum , Album.dateSortieAlbum , "+ 
+			"Artist.nomArtiste " +
+			"FROM Pistes, Album , Artist, CategorisationPiste , Fichier , ContenuMultimedia , Flux " + 
+			"Where Pistes.idAlbum = Album.idAlbum and Album.numArtiste = Artist.numArtiste " + 
+			"and Pistes.numPiste = CategorisationPiste.numPiste and Pistes.idAlbum  = CategorisationPiste.idAlbum " + 
+			"and Pistes.numPiste = ContenuMultimedia.numPiste and Pistes.idAlbum = ContenuMultimedia.idAlbum " +
+			"and Fichier.idFichier = ContenuMultimedia.idFichier and Fichier.idFichier = Flux.idFichier and " + 
+			"Pistes.titrePiste like ? and ";
+
+		req += "(";
+		
+		String to_terminate = "1 = 1";
+		for(Filtre monFiltre: filtres) {
+			if(monFiltre.getChamp().equals("langue")) {
+				to_terminate = "1 = 0";
+				req += " (Flux.";
+				req += monFiltre.getChamp();
+				req += " = ";
+				req += "'" + monFiltre.getValeur() + "'";
+				req += " and flux.type = 'audio')";
+				req += " OR ";
+			}
+		}
+		
+		req += to_terminate;
+		req += ")";
+		req+=" AND ";
+
+		req += "(";
+
+		to_terminate = "1 = 1";
+		for(Filtre monFiltre: filtres) {
+			if(monFiltre.getChamp().equals("categorie")) {
+				to_terminate = "1 = 0";
+				req += " ";
+				req += monFiltre.getChamp();
+				req += " = ";
+				req += "'" + monFiltre.getValeur() + "'";
+				req += " OR ";
+			}
+		}
+		
+		req += to_terminate;
+		req += ")";
+
+		req += "order by titrePiste";
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(req);
+		statement.setString(1, "%"+ name + "%");
+		ResultSet resultat =statement.executeQuery();
+		System.out.println("titre de la piste | l'album | annéeSortie | artiste principale | durée de la piste");
+		while(resultat.next()) {
+			System.out.println(resultat.getString("titrePiste")+" | "+ resultat.getString("titreAlbum") + 
+					" | "+ resultat.getDate("dateSortieAlbum") +" | "+ resultat.getString("nomArtiste") + 
+					" | " + resultat.getInt("dureePiste"));
+		}
+	}	
 }

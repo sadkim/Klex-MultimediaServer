@@ -3,17 +3,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Codec {
-	
+
+	/** Permet d'affichier les codecs qui sont enregistrés dans la base de donnée */
 	public static void codecDisponibles() throws SQLException {
 		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Codec");
 		ResultSet resultat =statement.executeQuery();
 		while(resultat.next()) {
 			System.out.println(resultat.getString("codec"));
 		}
-
 	}
 	
-	/** Verifier l'existance d'un codec */
+	/** Verifier l'existance d'un codec
+	 * @param c le nom du codec 
+	 */
 	public static boolean codecExist(String c) throws SQLException {
 		PreparedStatement s = BdClass.getConnection().prepareStatement("Select * From Codec where codec = ?");
 		s.setString(1, c);
@@ -34,7 +36,12 @@ public class Codec {
 		return addCodec(codec, enCascade);	
 	}
 	
-	/* si la creation est en cascade on ne commite pas */
+	/** Permet d'ajouter le codec dans la base de donnée
+	 * si la creation est en cascade on ne commite pas 
+	 * @param c le nom du codec 
+	 * @param enCascade permet de savoir si le codec est crée depuis l'interface ou pendant la création du logiciel 
+	 * seul la deuxième option est utilisée maintenant
+	 */
 	public static boolean addCodec(String c, boolean enCascade) throws SQLException { 
 
 		if(Codec.codecExist(c)) { 

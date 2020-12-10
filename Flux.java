@@ -34,8 +34,6 @@ public class Flux {
 			statement.setInt(7, idFichier);
 			statement.setString(8, type);
 			statement.executeQuery();
-			//if (statement.executeQuery().next()) BdClass.getConnection().commit(); TODO : le commit est maintenant dans fichier
-			//else BdClass.getConnection().rollback();
 		}
 		
 			//----------------------------------------------------------------------------------------------------------------//

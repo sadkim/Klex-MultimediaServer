@@ -27,7 +27,8 @@ public class SelectionPiste {
 		}
 		
 		/**Affichage**/
-		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Pistes WHERE CATEGORIE LIKE '%?%' order by titrePiste");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM Pistes WHERE CATEGORIE LIKE '%?%' order by titrePiste");
 		statement.setString(1, categorie);
 		ResultSet resultat = statement.executeQuery();
 		int index = 1;

@@ -27,7 +27,8 @@ public class SelectionFilm {
 		}
 		
 		/**Affichage**/
-		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Film WHERE CATEGORIE LIKE '%?%' order by titre");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM Film WHERE CATEGORIE LIKE '%?%' order by titre");
 		statement.setString(1, categorie);
 		ResultSet resultat = statement.executeQuery();
 		int index = 1;
@@ -36,10 +37,12 @@ public class SelectionFilm {
 			int anneeSortie = resultat.getInt("anneeSortie");
 			System.out.println(index + "  Titre : " + Titrefilm + "|" + "Année Sortie : " + anneeSortie);
 			index++;
+		}
 	}
-}
+	
 	public static void SelectFilmTout() throws SQLException {
-		PreparedStatement statement = BdClass.getConnection().prepareStatement("SELECT * FROM Film where ageMin < ? order by titre");
+		PreparedStatement statement = BdClass.getConnection().prepareStatement(
+				"SELECT * FROM Film where ageMin < ? order by titre");
 		ResultSet resultat = statement.executeQuery();
 		int index = 1;
 		while (resultat.next()) {
@@ -47,7 +50,7 @@ public class SelectionFilm {
 			int anneeSortie = resultat.getInt("anneeSortie");
 			System.out.println(index + "  Titre : " + Titrefilm + "|" + "Année Sortie : " + anneeSortie);
 			index++;
-			}
+		}
 	}
 
 }
