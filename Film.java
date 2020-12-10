@@ -143,6 +143,7 @@ public class Film {
     			}
 			}
 			/* Proposer l'ajout des contributeurs */
+			//TODO avant commit et avec obligation et repetition
 			System.out.println("Tapez contribution si vous voulez déclarer un artiste comme contributeur[artiste déjà existant]");
 			System.out.println("Tapez autre chose pour terminer");
 			String commande = Klex.scanner.nextLine();
