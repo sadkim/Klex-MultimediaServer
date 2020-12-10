@@ -63,7 +63,7 @@ public class User {
 			statement.setInt(4, age);
 			statement.setString(5, codeAcces);
 			statement.setString(6, languePrefere);
-			statement.executeQuery();
+			resultat = statement.executeQuery();
 			BdClass.getConnection().commit();
 			initialiseAtribut(resultat);
 		}
@@ -121,5 +121,5 @@ public static List<Integer> mesFichiers() throws SQLException {
 		list_ID.add(resultat.getInt("idFichier"));
 	}
 	return list_ID;
-		}
+}
 }
